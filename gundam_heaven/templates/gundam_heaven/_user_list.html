@@ -1,0 +1,12 @@
+{% if users %}
+    <div class="row">
+    {% for user in users %}
+        <div>
+            <a class="photo-with-name" style="padding-left: 10px" href="{% url 'gundam_heaven:user-detail' user.id %}">
+                <img src="{{ user.userinfo.photo.url }}" class="img-thumbnail img-fluid photo-user-tiny"/>
+            </a>
+        <div class="small photo-remark" style="display: none;position: absolute;">{{ user.userinfo.nickname }}</div>
+        </div>
+    {% endfor %}
+    </div>
+{% endif %}

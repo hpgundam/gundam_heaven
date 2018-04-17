@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% load static %}
+	<link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap-4.0.0-dist/css/bootstrap.min.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'font/font-awesome-4.7.0/css/font-awesome.min.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/mystyle.css' %}">
+    <script type="text/javascript" src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="{% static 'js/bootstrap-4.0.0-dist/js/bootstrap.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery.cookie.js' %}"></script>
+    <title>{% if title %}{{ title }}{% else %}Gundam Heaven{% endif %}</title>
+</head>
+<body>
+<div class="container-fluid">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="{% url 'gundam_heaven:index' %}">Gundam Heaven</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
+            <ul class="navbar-nav">
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'gundam_heaven:user-detail' id=user.id %}">Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="javascript:void(0);" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          <img class="img-thumbnail img-fluid photo-user-tiny" src="{{ user.userinfo.photo.url }}" alt="user photo"/>
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item" href="{% url 'gundam_heaven:password-change' %}">Change Password</a>
+                            <a class="dropdown-item" href="#">Reset Password</a>
+                            <a class="dropdown-item" href="{% url 'gundam_heaven:logout' %}">Logout</a>
+                        </div>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'gundam_heaven:register' %}">Register</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'gundam_heaven:login' %}">Login</a>
+                    </li>
+                {% endif %}
+            </ul>
+            <form class="form-inline" style="padding-left: 20px;">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+        </div>
+    </nav>
+</div>
+    <ul class="messages list-unstyled text-center">
+        {% for message in messages %}
+            <li{% if message.tags %} class="alert-{{ message.tags }} message-item"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% block body %}{% endblock %}
+
+<script>
+    $('img').each(function(){
+        $(this).css('height', $(this).css('width'));
+    });
+
+    $('.photo-with-name').hover(function(){
+        $(this).siblings('div').show();
+    }, function(){
+         $(this).siblings('div').hide();
+    });
+
+    $('.message-item').hide(5000);
+</script>
+</body>
+</html>

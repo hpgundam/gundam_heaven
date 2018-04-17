@@ -1,0 +1,32 @@
+<div class="container">
+    <div class="row">
+        <div class="col-3"></div>
+        <div class="col-6">
+            <div class="h3 text-center">{{ form_title }}</div>
+            <form action="{{ action }}" method="post" role="form">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="form-group">
+                        {{ field.label_tag }}
+                        {{ field }}
+                        {% if field.errors %}
+                            <ul class="list-unstyled alert-danger field-errors">
+                                {% for error in field.errors %}
+                                    <li class="small">{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                <button class="btn btn-outline-primary" type="submit">{{ btn_text }}</button>
+            </form>
+        </div>
+        <div class="col-3"></div>
+    </div>
+</div>
+
+
+<script>
+    $('form input').addClass('form-control');
+    $('form select').addClass('custom-select');
+</script>

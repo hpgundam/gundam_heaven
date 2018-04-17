@@ -1,0 +1,15 @@
+{% extends 'gundam_heaven/layout.html' %}
+{% block body %}
+    <h1>index</h1>
+    <div class="container">
+        <div class="row">
+            <div class="col-3"></div>
+            <div class="col-6">
+                {% include "gundam_heaven/_article_list.html" %}
+            </div>
+            <div class="col-3">
+            {% include "gundam_heaven/_user_list.html" %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

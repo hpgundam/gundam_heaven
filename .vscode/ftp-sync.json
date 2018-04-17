@@ -1,0 +1,25 @@
+{
+    "remotePath": "/home/djangoer/projects/blog",
+    "host": "192.168.91.128",
+    "username": "djangoer",
+    "password": "hp",
+    "port": 22,
+    "secure": false,
+    "protocol": "sftp",
+    "uploadOnSave": true,
+    "passive": false,
+    "debug": false,
+    "privateKeyPath": null,
+    "passphrase": null,
+    "ignore": [
+        "\\.vscode",
+        "\\.git",
+        "\\.DS_Store",
+        ".sqlite"
+    ],
+    "generatedFiles": {
+        "uploadOnSave": false,
+        "extensionsToInclude": [],
+        "path": ""
+    }
+}

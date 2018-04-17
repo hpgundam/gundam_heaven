@@ -1,0 +1,49 @@
+.field-errors {
+    margin-top: 5px;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.zone-userinfo{
+    background-color: #5bc0de;
+}
+
+.zone-extra{
+    background-color: #9fcdff;
+}
+
+.zone-articles{
+    background-color: #80bdff;
+}
+
+.table tbody tr th, .table tbody tr td {
+    border: none;
+}
+
+.photo-user-normal{
+    width: 100%;
+}
+
+.photo-user-tiny{
+    width: 35px;
+    padding: 2px;
+}
+
+.photo-remark{
+    background-color: #80bdff;
+    border-radius: 5px;
+    padding: 3px;
+    margin: 2px;
+}
+
+.message-item{
+    padding-bottom: 5px;
+    position: absolute;
+    width: 100%;
+    z-index: 999;
+}
+
+.alert-error{
+    background: #eba19c;
+    color:#ff0000;
+}

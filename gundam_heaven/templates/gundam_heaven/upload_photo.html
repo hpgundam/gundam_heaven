@@ -1,0 +1,33 @@
+{% extends 'gundam_heaven/layout.html' %}
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-3"></div>
+            <div class="col-6" style="padding-top: 20px">
+                <form action="{% url 'gundam_heaven:change-photo' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="h5" style="padding-bottom: 10px;">You can choose your photo from below:</div>
+                    <div>
+                        {% for photo in default_photos %}
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="photo" id="id_checkbox_{{ forloop.counter }}" value="{{ photo }}">
+                                <label for="id_checkbox_{{ forloop.counter }}"><img style="width: 50px" class="img-thumbnail img-fluid photo-user-normal" src="{{ photo }}"/></label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        <label class="h5" style="padding-bottom: 10px" for="id_photo">
+                            If you upload your own photo file, you can ignore the above default photos:
+                        </label>
+                        {{ form.photo }}
+                    </div>
+                    <button type="submit" class="btn btn-outline-primary">Change</button>
+                </form>
+            </div>
+            <div class="col-3"></div>
+        </div>
+    </div>
+<script>
+
+</script>
+{% endblock %}
