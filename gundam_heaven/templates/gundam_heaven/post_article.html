@@ -4,6 +4,11 @@
         <div class="row">
             <div class="col-2"></div>
             <div class="col-7">
+                {% if error %}
+                    <div style="color: red;">
+                    {{ error }}
+                    </div>
+                {% endif %}
                 <form action="{% url 'gundam_heaven:post-article' %}" method="post">
                     {% csrf_token %}
                     <div class="form-group">
@@ -12,7 +17,17 @@
                     </div>
                     <div class="form-group">
                         <label>Content:</label>
-                        <textarea required="required" name="content" style="width: 100%;" rows="12"></textarea>
+                        <textarea required="required" name="content" style="width: 100%;" rows="10"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Tags:</label>
+                        <div class="btn-group-toggle form-control" data-toggle="buttons">
+                            {% for tag in tags %}
+                                <label class="btn btn-outline-secondary">
+                                    <input type="checkbox" name="tags" value="{{ tag.id }}"> {{ tag.name }}
+                                </label>
+                            {% endfor %}
+                        </div>
                     </div>
                     <button type="submit" class="btn btn-outline-primary float-right">Post</button>
                 </form>

@@ -13,8 +13,9 @@ import os
 import glob
 import json
 
-from gundam_heaven.models import UserInfo, Article
+from gundam_heaven.models import UserInfo
 from gundam_heaven.forms import FileUploadForm, UserInfoChangeForm
+from gundam_heaven.utils import get_current_page
 
 
 from django.core.exceptions import ObjectDoesNotExist
@@ -44,11 +45,13 @@ def register(request):
 
 @require_GET
 def detail(request, id):
+    cur_page_no = request.GET.get('page', 1)
     user = get_object_or_404(User, id=id)
     title = 'Home Page of {}'.format(user.username)
     followers = [ follower.follower for follower in user.followers.all() ]
     followees = [ followee.followee for followee in user.followees.all() ]
-    articles = user.articles.order_by('-update_time')
+    articles_all = user.articles.order_by('-update_time')
+    articles = get_current_page(articles_all, amt_per_page=1, cur_page_no=int(cur_page_no))
     return render(request, 'gundam_heaven/user_detail.html', {'owner': user, 'title': title, 'followers': followers, 'followees': followees, 'articles': articles})
 
 @require_http_methods(['GET', 'POST'])

@@ -1,17 +1,58 @@
-<div class="pagination">
+{% load article_tags %}
 
+<div class="pagination">
+    {% if articles.has_other_pages %}
+        <ul class="pagination pagination-sm">
+            {% if articles.has_previous %}
+                {% if articles.number <= 6 and articles.number > 1 %}
+                    {% for page_no in articles|pre_page_range:0 %}
+                        <li class="page-item"><a class="page-link" href="?page={{ page_no }}">{{ page_no }}</a></li>
+                    {% endfor %}
+                {% elif articles.number > 6 %}
+                    <li class="page-item"><a class="page-link" href="?page=1">1</a></li>
+                    <li class="page-item">...</li>
+                    {% for page_no in articles|pre_page_range:4 %}
+                        <li class="page-item"><a class="page-link" href="?page={{ page_no }}">{{ page_no }}</a></li>
+                    {% endfor %}
+                {% endif %}
+            {% endif %}
+            <li class="page-item disabled"><a class="page-link" href="?page={{ articles.number }}">{{ articles.number }}</a> </li>
+            {% if articles.has_next %}
+                {% if articles.paginator.num_pages <= articles.number|add:4 %}
+                    {% for page_no in articles|after_page_range:0 %}
+                        <li class="page-item"><a class="page-link" href="?page={{ page_no }}">{{ page_no }}</a></li>
+                    {% endfor %}
+                {% else %}
+                    {% for page_no in articles|after_page_range:3 %}
+                        <li class="page-item"><a class="page-link" href="?page={{ page_no }}">{{ page_no }}</a></li>
+                    {% endfor %}
+                        <li class="page-item">...</li>
+                        <li class="page-item"><a class="page-link" href="?page={{ articles.paginator.num_pages }}">{{ articles.paginator.num_pages }}</a></li>
+                {% endif %}
+            {% endif %}
+        </ul>
+
+    {% endif %}
 </div>
 <div>
     {% for article in articles %}
         <div class="row">
             <div class="col-6"><a href="{% url 'gundam_heaven:article-detail' pk=article.id %}">{{ article.title }}</a></div>
             {% if not owner %}
-                <div>Author: <a href="{% url 'gundam_heaven:user-detail' id=article.author.id %}">{{ article.author.userinfo.nickname }}</a></div>
+                <div class="small">Author: <a href="{% url 'gundam_heaven:user-detail' id=article.author.id %}">{{ article.author.userinfo.nickname }}</a></div>
             {% endif %}
         </div>
         <div class="row">
-            <div class="col-6">update time: {{ article.update_time|date:"Y-m-d H:i:s" }}</div>
-            <div class="col-6">create time: {{ article.create_time|date:"Y-m-d H:i:s" }}</div>
+            <div class="col-6 datetime small">update time: {{ article.update_time|date:"Y-m-d H:i:s" }}</div>
+            <div class="col-6 datetime small">create time: {{ article.create_time|date:"Y-m-d H:i:s" }}</div>
+        </div>
+        <div style="padding-top: 5px;">
+            <small>Tags : </small>
+            {% for tag in article.tags.all %}
+                <div class="btn-group">
+                    <a class="btn btn-outline-success btn-sm" href="#">{{ tag.name }}</a>
+                </div>
+            {% endfor %}
         </div>
         <hr>
     {% endfor %}

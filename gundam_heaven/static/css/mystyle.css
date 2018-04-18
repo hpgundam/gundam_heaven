@@ -4,18 +4,6 @@
     border-radius: 5px;
 }
 
-.zone-userinfo{
-    background-color: #5bc0de;
-}
-
-.zone-extra{
-    background-color: #9fcdff;
-}
-
-.zone-articles{
-    background-color: #80bdff;
-}
-
 .table tbody tr th, .table tbody tr td {
     border: none;
 }
@@ -47,3 +35,16 @@
     background: #eba19c;
     color:#ff0000;
 }
+
+.datetime{
+    color: grey;
+}
+
+A:link, A:visited, A:active {
+    text-decoration: none;
+}
+
+
+
+
+

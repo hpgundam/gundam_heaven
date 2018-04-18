@@ -11,12 +11,14 @@ account_urlpatterns = [
     path('change_password/', views.change_password, name='password-change'),
     path('change_photo/', views.change_photo, name='change-photo'),
     path('change_info/', views.change_info, name='change-info'),
-    path('<int:id>/follow/', views.follow_user, name='follow-user'), 
+    path('follow/<int:id>/', views.follow_user, name='follow-user'),
 ]
 
 article_urlpatterns = [
     path('post/', views.post_article, name='post-article'),
     path('<int:pk>/', views.ArticleDetailView.as_view(), name='article-detail'),
+    path('like/<int:pk>/', views.like_article, name='like-article'),
+    path('comment/<int:pk>/', views.comment_article, name='comment-article'),
 ]
 
 urlpatterns = [

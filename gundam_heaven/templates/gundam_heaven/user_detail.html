@@ -45,9 +45,11 @@
             <div class="col-6 zone-articles" style="padding-top:20px;">
                 <div class="row">
                     <div class="col-6 h3 text-center">Article List</div>
-                    <div class="col-6">
-                        <a href="{% url 'gundam_heaven:post-article' %}" class="btn btn-outline-secondary float-right">Post an article</a>
-                    </div>
+                    {% if user == owner %}
+                        <div class="col-6">
+                            <a href="{% url 'gundam_heaven:post-article' %}" class="btn btn-outline-secondary float-right">Post an article</a>
+                        </div>
+                    {% endif %}
                 </div>
                 <hr style="color:aliceblue;">
                 {% include 'gundam_heaven/_article_list.html' %}
