@@ -29,57 +29,10 @@
                 <div class="row">
                     <div>{{ article.content }}</div>
                 </div>
-            <!-- comment submit -->
-                <div style="padding-top: 30px;">
-                    <form action="{% url 'gundam_heaven:comment-article' pk=article.id %}" method="post" role="form" id="comment_form">
-                        {% csrf_token %}
-                        <div class="form-group">
-                            <label>Comment: </label>
-                            <textarea class="form-control" style="resize: none;" name="comment" id="comment_content"></textarea>
-                        </div>
-                        <button class="btn btn-outline-secondary float-right" type="submit">Submit</button>
-                    </form>
-                </div>
-            <!-- comment display -->
-                <div style="padding-top: 30px;">
-                    <div style="padding-bottom: 10px;">Comment List : </div>
-                    <ul class="list-group">
-                        {% for comment in comments %}
-                            <li class="list-group-item">
-                                <div class="row">
-                                    <div class="col-6">
-                                        <a href="{% url 'gundam_heaven:user-detail' comment.commentor.id %}">
-                                            <img src="{{ comment.commentor.userinfo.photo.url }}" class="img-thumbnail img-fluid photo-user-tiny"/>
-                                            {{ comment.commentor.userinfo.nickname }}
-                                        </a>
-                                        {% if comment.commentee %}
-                                        <small> reply to </small>
-                                        <a href="{% url 'gundam_heaven:user-detail' comment.commentee.id %}">
-                                            <img src="{{ comment.commentee.userinfo.photo.url }}" class="img-thumbnail img-fluid photo-user-tiny"/>
-                                        {{ comment.commentee.userinfo.nickname }}
-                                        </a>
-                                        {% endif %}
-                                    </div>
-                                    <div class="col-6">
-                                        <small class="float-right">Floor : {{ comment.floor }}</small>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-8"></div>
-                                    <div class="col-2">
-                                        <a id="reply_{{ comment.commentor.id }}" class="small float-right btn_reply" href="javascript:void(0);"><i class="fa fa-reply fa-lg"></i> Reply</a>
-                                    </div>
-                                    <div class="col-2">
-                                        <a class="small float-right" href="javascript:void(0);"><i class="fa fa-comments fa-lg"></i> Full Chat</a>
-                                    </div>
-                                </div>
-                                {{ comment.content }}
-                            </li>
-                        {% endfor %}
-                    </ul>
+                <div class="comment-list">
+                    {% include 'gundam_heaven/_comment_list.html' with display='comment_list'%}
                 </div>
             </div>
-
             <div class="col-4"></div>
         </div>
     </div>
@@ -111,11 +64,5 @@
         })
     });
 
-    $('.btn_reply').on('click', function(){
-        var full_id = $.trim($(this).attr('id'));
-        var id = full_id.substr(full_id.lastIndexOf('_')+1);
-        $('#comment_content').focus();
-        $('#comment_form').append('<input hidden="hidden" name="commentee" value="'+id+'">');
-    });
 </script>
 {% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'gundam_heaven/layout.html' %}
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-2"></div>
+            <div class="col-8">
+                <div class="comment-full-chat">
+                    {% include 'gundam_heaven/_comment_list.html' with display='comment_full_chat'%}
+                </div>
+            </div>
+            <div class="col-2"></div>
+        </div>
+    </div>
+{% endblock %}

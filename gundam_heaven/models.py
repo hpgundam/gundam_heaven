@@ -81,7 +81,7 @@ class Mark(models.Model):
 class Comment(models.Model):
     commentor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='commenting')
     article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='comments')
-    commentee = models.ForeignKey(User, on_delete=models.CASCADE, related_name='commented', blank=True, null=True)
+    reply_to = models.ForeignKey('self', on_delete=models.CASCADE, related_name='reply_from', blank=True, null=True)
     floor = models.PositiveIntegerField()
     content = models.TextField(max_length=100)
     create_time = models.DateTimeField(auto_now=True)

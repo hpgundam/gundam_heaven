@@ -1,0 +1,64 @@
+<!-- comment submit -->
+<div style="padding-top: 30px;">
+    <form action="{% url 'gundam_heaven:comment-article' pk=article.id %}" method="post" role="form" id="comment_form">
+        {% csrf_token %}
+        <div class="form-group">
+            <label>Comment: </label>
+            <textarea class="form-control" style="resize: none;" name="comment" id="comment_content"></textarea>
+        </div>
+        <button class="btn btn-outline-secondary float-right" type="submit">Submit</button>
+    </form>
+</div>
+<!-- comment display -->
+<div style="padding-top: 30px;padding-bottom: 50px;">
+    <div>
+        <div style="padding-bottom: 10px;">
+            {% if display == 'comment_list' %}Comment List{% elif display == 'comment_full_chat' %}Full Chat{% endif %}
+        </div>
+        {% include 'gundam_heaven/_pagination.html' with page=comments %}
+        <ul class="list-group">
+            {% for comment in comments %}
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-6">
+                            <a href="{% url 'gundam_heaven:user-detail' comment.commentor.id %}">
+                                <img src="{{ comment.commentor.userinfo.photo.url }}" class="img-thumbnail img-fluid photo-user-tiny"/>
+                                {{ comment.commentor.userinfo.nickname }}
+                            </a>
+                            {% if comment.reply_to %}
+                            <small> reply to </small>
+                            <a href="{% url 'gundam_heaven:user-detail' comment.reply_to.commentor.id %}">
+                                <!--<img src="{{ comment.reply_to.commentor.userinfo.photo.url }}" class="img-thumbnail img-fluid photo-user-tiny"/>-->
+                            {{ comment.reply_to.commentor.userinfo.nickname }}
+                            </a>
+                            {% endif %}
+                        </div>
+                        <div class="col-6">
+                            <small class="float-right">Floor : {{ comment.floor }}</small>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-8 datetime small">{{ comment.create_time|date:"Y-m-d H:i:s" }}</div>
+                        <div class="col-2">
+                            <a id="reply_{{ comment.id }}" class="small float-right btn_reply" href="javascript:void(0);"><i class="fa fa-reply fa-lg"></i> Reply</a>
+                        </div>
+                        <div class="col-2">
+                            {% if comment.reply_from.all and display == 'comment_list' %}
+                                <a class="small float-right" href="{% url 'gundam_heaven:full-chat' article_pk=article.id comment_pk=comment.id %}"><i class="fa fa-comments fa-lg"></i> Full Chat</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {{ comment.content }}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+<script>
+    $('.btn_reply').on('click', function(){
+        var full_id = $.trim($(this).attr('id'));
+        var id = full_id.substr(full_id.lastIndexOf('_')+1);
+        $('#comment_content').focus();
+        $('#comment_form').append('<input hidden="hidden" name="reply_to" value="'+id+'">');
+    });
+</script>

@@ -1,14 +1,14 @@
-from gundam_heaven.models import Article, Tag, Mark
+from gundam_heaven.models import Article, Tag, Mark, Comment
 from gundam_heaven.utils import get_current_page
 
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import DetailView
-from django.views.decorators.http import require_http_methods, require_POST
+from django.views.decorators.http import require_http_methods, require_POST, require_GET
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import HttpResponse
-from django.db.models import Max
+from django.db.models import Max, Q
 
 import json
 
@@ -107,12 +107,21 @@ def comment_article(request, pk):
     content = request.POST['comment']
     article = get_object_or_404(Article, id=pk)
     max_floor = article.comments.all().aggregate(Max('floor'))['floor__max'] or 0
-    commentee = request.POST.get('commentee', None)
-    if commentee is None:
-        request.user.commenting.create(article=article, commentee=commentee, content=content, floor=max_floor+1)
+    reply_to = request.POST.get('reply_to', None)
+    if reply_to is None:
+        request.user.commenting.create(article=article, reply_to=reply_to, content=content, floor=max_floor+1)
     else:
-        request.user.commenting.create(article=article, commentee_id=int(commentee), content=content, floor=max_floor + 1)
+        request.user.commenting.create(article=article, reply_to_id=int(reply_to), content=content, floor=max_floor + 1)
     return redirect(reverse('gundam_heaven:article-detail', kwargs={'pk': article.id}))
+
+
+@require_GET
+def get_full_chat(request, article_pk, comment_pk):
+    cur_page_no = request.GET.get('page', 1)
+    article = get_object_or_404(Article, id=article_pk)
+    comments_all = article.comments.filter(Q(id=comment_pk)|Q(reply_to_id=comment_pk)).order_by('floor')
+    comments = get_current_page(comments_all, amt_per_page=3, cur_page_no=cur_page_no)
+    return render(request, 'gundam_heaven/comment_full_chat.html', {'comments': comments, 'article': article})
 
 
 
