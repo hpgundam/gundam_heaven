@@ -17,6 +17,7 @@ from gundam_heaven.models import UserInfo
 from gundam_heaven.forms import FileUploadForm, UserInfoChangeForm
 from gundam_heaven.utils import get_current_page
 
+from gundam_heaven.signals import signal_notification
 
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -156,26 +157,24 @@ def follow_user(request, id):
         try:
             follower.followees.create(followee=followee)
         except Exception as e:
-            # messages.error(request, 'Follow failed.{}'.format((e.args[0])))
             data['result'] = 'failure'
             data['error'] = e.args[0]
             raise e
         else:
-            # messages.success(request, "You've successfully followed {}".format(followee.userinfo.nickname))
             data['result'] = 'success'
             data['message'] = "You've successfully followed {}".format(followee.userinfo.nickname)
+            signal_notification.send(followee, subject=follower, verb='followed you', type=1)
     elif action == 'unfollow':
         try:
             follower.followees.get(followee=followee).delete()
         except Exception as e:
-            # messages.error(request, 'Unfollow failed.{}'.format((e.args[0])))
             data['result'] = 'failure'
             data['error'] = e.args[0]
             raise e
         else:
-            # messages.success(request, "You've successfully unfollowed {}".format(followee.userinfo.nickname))
             data['result'] = 'success'
             data['message'] = "You've successfully unfollowed {}".format(followee.userinfo.nickname)
+            signal_notification.send(followee, subject=follower, verb='unfollowed you', type=1)
     else:
         data['result'] = 'failure'
         data['error'] = 'invalid action'

@@ -3,26 +3,27 @@
 <div class="pagination">
     {% include 'gundam_heaven/_pagination.html' with page=articles %}
 </div>
-<div>
+<ul class="list-group list-group-flush">
     {% for article in articles %}
-        <div class="row">
-            <div class="col-6"><a href="{% url 'gundam_heaven:article-detail' pk=article.id %}">{{ article.title }}</a></div>
-            {% if not owner %}
-                <div class="small">Author: <a href="{% url 'gundam_heaven:user-detail' id=article.author.id %}">{{ article.author.userinfo.nickname }}</a></div>
-            {% endif %}
-        </div>
-        <div class="row">
-            <div class="col-6 datetime small">update time: {{ article.update_time|date:"Y-m-d H:i:s" }}</div>
-            <div class="col-6 datetime small">create time: {{ article.create_time|date:"Y-m-d H:i:s" }}</div>
-        </div>
-        <div style="padding-top: 5px;">
-            <small>Tags : </small>
-            {% for tag in article.tags.all %}
-                <div class="btn-group">
-                    <a class="btn btn-outline-success btn-sm" href="#">{{ tag.name }}</a>
-                </div>
-            {% endfor %}
-        </div>
-        <hr>
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-6"><a href="{% url 'gundam_heaven:article-detail' pk=article.id %}">{{ article.title }}</a></div>
+                {% if not owner %}
+                    <div class="small">Author: <a href="{% url 'gundam_heaven:user-detail' id=article.author.id %}">{{ article.author.userinfo.nickname }}</a></div>
+                {% endif %}
+            </div>
+            <div class="row">
+                <div class="col-6 datetime small">update time: {{ article.update_time|date:"Y-m-d H:i:s" }}</div>
+                <div class="col-6 datetime small">create time: {{ article.create_time|date:"Y-m-d H:i:s" }}</div>
+            </div>
+            <div style="padding-top: 5px;">
+                <small>Tags : </small>
+                {% for tag in article.tags.all %}
+                    <div class="btn-group">
+                        <a class="btn btn-outline-success btn-sm" href="#">{{ tag.name }}</a>
+                    </div>
+                {% endfor %}
+            </div>
+        </li>
     {% endfor %}
-</div>
+</ul>

@@ -86,6 +86,30 @@ class Comment(models.Model):
     content = models.TextField(max_length=100)
     create_time = models.DateTimeField(auto_now=True)
 
+NOTIFICATION_TYPES = (
+    (1, 'like_follow'),
+    (2, 'comment_article'),
+    (3, 'followee_event'),
+)
+
+class Notification(models.Model):
+    type = models.PositiveIntegerField(choices=NOTIFICATION_TYPES)
+    subject = models.ForeignKey(User, on_delete=models.CASCADE)
+    verb = models.CharField(max_length=100)
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, blank=True, null=True)
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, blank=True, null=True)
+    create_time = models.DateTimeField(auto_now=True)
+    has_read = models.BooleanField(default=False)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+
+    class Meta:
+        ordering = ('has_read', '-create_time')
+
+
+
+
+
+
 
 
 

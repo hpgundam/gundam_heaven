@@ -1,0 +1,66 @@
+{% extends 'gundam_heaven/layout.html' %}
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-2"></div>
+            <div class="col-8">
+                <ul class="nav nav-tabs row">
+                    <li class="nav-item col-4">
+                        <a class="nav-link note-tab-a {% if type == '1' %}active{% endif %}" href="?type=1">
+                            <i class="fa fa-heart fa-lg"></i>
+                        </a>
+                    </li>
+                    <li class="nav-item col-4">
+                        <a class="nav-link note-tab-a {% if type == '2' %}active{% endif %}" href="?type=2"><i class="fa fa-comments fa-lg"></i></a>
+                    </li>
+                    <li class="nav-item col-4">
+                        <a class="nav-link note-tab-a {% if type == '3' %}active{% endif %}" href="?type=3"><i class="fa fa-tags fa-lg"></i></a>
+                    </li>
+                </ul>
+                <div style="padding-top: 20px">
+                    <ul class="list-group list-group-flush">
+                        {% for notification in notifications %}
+                            <li class="list-group-item{% if notification.has_read %} disabled {% endif %}">
+                                <div class="row">
+                                    <div class="col-1">{% if notification.has_read %}<i class="fa fa-check"></i>{% endif %}</div>
+
+                                    <div class="col-8">
+                                        <a class="link-in-noti" id="noti-sub-{{ notification.id }}" href="{% url 'gundam_heaven:user-detail' id=notification.subject.id %}">{{ notification.subject }}</a>
+                                        {{ notification.verb }}
+                                        {% if notification.comment %}
+                                            <a class="link-in-noti" id="noti-comment-{{ notification.id }}" href="{% url 'gundam_heaven:article-detail' pk=notification.article.id %}#reply_{{ notification.comment.id }}">
+                                                {{ notification.comment.content|truncatewords:10 }}
+                                            </a>
+                                        {% endif %}
+                                        {% if notification.article %}
+                                            {% if notification.type == 2 %}in the article {% endif  %}
+                                            <a class="link-in-noti" id="noti-article-{{ notification.id }}" href="{% url 'gundam_heaven:article-detail' pk=notification.article.id %}">{{ notification.article.title }}</a>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="col-3 datetime small">{{ notification.create_time|date:'Y-m-d H:i:s' }}</div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="col-2"></div>
+        </div>
+    </div>
+<script>
+    $('.link-in-noti').on('click', function(){
+       var cur_obj = $(this);
+       var full_id = cur_obj.attr('id');
+       var id = full_id.substr(full_id.lastIndexOf('-')+1);
+       var forward_to = cur_obj.attr('href');
+       $.ajax({
+           url: "{% url 'gundam_heaven:read-notification' %}",
+           data: {'csrfmiddlewaretoken': "{{ csrf_token }}", 'noti_id': id, 'forward': forward_to},
+           type: "post",
+           success: function(ret_data) {},
+           error: function(){console.log('ajax failed');},
+       });
+    });
+</script>
+{% endblock %}

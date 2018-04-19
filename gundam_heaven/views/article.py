@@ -1,5 +1,6 @@
 from gundam_heaven.models import Article, Tag, Mark, Comment
 from gundam_heaven.utils import get_current_page
+from gundam_heaven.signals import signal_notification
 
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.urls import reverse_lazy
@@ -9,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import HttpResponse
 from django.db.models import Max, Q
+
 
 import json
 
@@ -30,6 +32,8 @@ def post_article(request):
             messages.error(request, 'post article failed.')
             return render(request, 'gundam_heaven/post_article.html', {'tags': tags, 'error': e.args[0]})
         messages.success(request, 'successfully posted an article')
+        for follower in request.user.followers.all():
+            signal_notification.send(follower.follower, subject=request.user, verb='posted an article', article=article, type=3)
         return redirect(reverse('gundam_heaven:article-detail', kwargs={'pk': article.id}))
     elif request.method == 'GET':
         return render(request, 'gundam_heaven/post_article.html',{'tags': tags})
@@ -47,7 +51,6 @@ class ArticleDetailView(DetailView):
         else:
             like_amt = len(followers.split(':'))
         context['like_amt'] = like_amt
-
         #get paginated comments
         context['comments'] = get_current_page(self.object.comments.order_by('-floor'), amt_per_page=3, cur_page_no=self.request.GET.get('page', 1))
         return context
@@ -78,6 +81,7 @@ def like_article(request, pk):
                 data['like_amt'] = len(old_followers_set)
         article.followers = new_followers
         article.save()
+        signal_notification.send(article.author, subject=request.user, verb='liked your article', article=article, type=1)
     elif action == 'unlike':
         if old_followers is None:
             data['result'] = 'failure'
@@ -95,6 +99,7 @@ def like_article(request, pk):
                 article.followers = new_followers
                 article.save()
                 data['like_amt'] = len(old_followers_set)
+        signal_notification.send(article.author, subject=request.user, verb='unliked your article', article=article, type=1)
     else:
         data['result'] = 'failure'
         data['error'] = 'invalid action'
@@ -110,8 +115,10 @@ def comment_article(request, pk):
     reply_to = request.POST.get('reply_to', None)
     if reply_to is None:
         request.user.commenting.create(article=article, reply_to=reply_to, content=content, floor=max_floor+1)
+        signal_notification.send(article.author, subject=request.user, verb='commented', article=article, type=2)
     else:
         request.user.commenting.create(article=article, reply_to_id=int(reply_to), content=content, floor=max_floor + 1)
+        signal_notification.send(article.author, subject=request.user, verb='commented your comment', comment=int(reply_to), article=article, type=2)
     return redirect(reverse('gundam_heaven:article-detail', kwargs={'pk': article.id}))
 
 

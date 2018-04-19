@@ -43,7 +43,7 @@
                 </table>
             </div>
             <div class="col-6 zone-articles" style="padding-top:20px;">
-                <div class="row">
+                <div class="row" style="padding-bottom: 20px;">
                     <div class="col-6 h3 text-center">Article List</div>
                     {% if user == owner %}
                         <div class="col-6">
@@ -51,7 +51,6 @@
                         </div>
                     {% endif %}
                 </div>
-                <hr style="color:aliceblue;">
                 {% include 'gundam_heaven/_article_list.html' %}
             </div>
             <div class="col-3 zone-extra">

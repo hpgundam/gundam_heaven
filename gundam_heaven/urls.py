@@ -22,9 +22,16 @@ article_urlpatterns = [
     path('<int:article_pk>/comment/<int:comment_pk>/', views.get_full_chat, name='full-chat'),
 ]
 
+notification_urlpatterns = [
+    path('', views.NotificationListView.as_view(), name='notification-list'),
+    path('read/', views.read_notification, name='read-notification'),
+]
+
+
 urlpatterns = [
     path('', views.index, name='index'),
     path('account/', include(account_urlpatterns)),
     path('article/', include(article_urlpatterns)),
+    path('notification/', include(notification_urlpatterns)),
 ]
 
