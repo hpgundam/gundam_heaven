@@ -9,12 +9,14 @@ a society website about gundam created by django
 	- upload photo
 	- follow/unfollow a user
 	- display user page
+	- password reset with email
 2. article
 	- post article
 	- display an article
 	- like an article
 	- comment an article/reply to a comment
 	- check full chat of comments
+	- mark article with tags
 3. notification
 	- create notification when:
 		- somebody follow/unfollow you
@@ -26,10 +28,11 @@ a society website about gundam created by django
 
 ## not implemented
 1. account
-	- password reset with email
+	- add mq for email
 2. article
 	- add an article to favorite
 	- search article using key word
+	- get article list from tags
 3. notification
 4. redis support
 5. restful api

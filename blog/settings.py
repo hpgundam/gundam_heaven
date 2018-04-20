@@ -122,3 +122,16 @@ STATIC_URL = '/static/'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+#Email
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.163.com'
+EMAIL_PORT = 25
+EMAIL_HOST_USER = 'hpstrike@163.com'
+EMAIL_HOST_PASSWORD = 'hp2483546'
+EMAIL_USE_TSL = False
+DEFAULT_FROM_EMAIL = 'hpstrike@163.com'
+
+
+
+

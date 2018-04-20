@@ -31,8 +31,8 @@
                           <img class="img-thumbnail img-fluid photo-user-tiny" src="{{ user.userinfo.photo.url }}" alt="user photo"/>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            <a class="dropdown-item" href="{% url 'gundam_heaven:password-change' %}">Change Password</a>
-                            <a class="dropdown-item" href="#">Reset Password</a>
+                            <a class="dropdown-item" href="{% url 'gundam_heaven:change-password' %}">Change Password</a>
+                            <a class="dropdown-item" href="{% url 'gundam_heaven:password_reset' %}">Reset Password</a>
                             <a class="dropdown-item" href="{% url 'gundam_heaven:logout' %}">Logout</a>
                         </div>
                     </li>
@@ -64,9 +64,16 @@
     </ul>
     {% block body %}{% endblock %}
 <script>
-    $('img').each(function(){
-        $(this).css('height', $(this).css('width'));
+    $(document).ready(function(){
+        $('img').each(function(){
+            $(this).css('height', $(this).css('width'));
+        });
+
+        $('.message-item').hide(5000);
+
+        $('form input').addClass('form-control');
     });
+
 
     $('.photo-with-name').hover(function(){
         $(this).siblings('div').show();
@@ -74,7 +81,6 @@
          $(this).siblings('div').hide();
     });
 
-    $('.message-item').hide(5000);
 
 </script>
 </body>

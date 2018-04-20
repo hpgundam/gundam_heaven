@@ -11,7 +11,7 @@
                         {% for photo in default_photos %}
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="photo" id="id_checkbox_{{ forloop.counter }}" value="{{ photo }}">
-                                <label for="id_checkbox_{{ forloop.counter }}"><img style="width: 50px" class="img-thumbnail img-fluid photo-user-normal" src="{{ photo }}"/></label>
+                                <label for="id_checkbox_{{ forloop.counter }}"><img class="img-thumbnail img-fluid photo-user-normal" style="width: 100px;" src="{{ photo }}"/></label>
                             </div>
                         {% endfor %}
                     </div>
@@ -27,7 +27,4 @@
             <div class="col-3"></div>
         </div>
     </div>
-<script>
-
-</script>
 {% endblock %}

@@ -1,4 +1,42 @@
 {% extends 'gundam_heaven/layout.html' %}
 {% block body %}
-    {% include 'gundam_heaven/_account_related_form.html' with form_title='Change Information' btn_text='Change' %}
+<div class="container">
+    <div class="row">
+        <div class="col-3"></div>
+        <div class="col-6">
+            <div class="h3 text-center">Change Information</div>
+            <form action="{{ action }}" method="post" role="form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="id_username">Nickname</label>
+                    <input type="text" name="nickname" id="id_username" required="required" value="{{ nickname }}">
+                </div>
+                <div class="form-group">
+                    <label for="id_age">Age</label>
+                    <input type="number" name="age" id="id_age" required="required" value="{{ age }}">
+                </div>
+                <div class="form-group">
+                    <label for="id_email">Email</label>
+                    <input type="email" name="email" id="id_email" required="required" value="{{ email }}">
+                </div>
+                <div class="form-group">
+                    <label style="padding-right: 20px;">Sex</label>
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="btn btn-light {% if sex == 0 %}active{% endif %}">
+                            <input type="radio" name="sex" value="0">Female
+                        </label>
+                        <label class="btn btn-light {% if sex == 1 %}active{% endif %}">
+                            <input type="radio" name="sex" value="1">Male
+                        </label>
+                        <label class="btn btn-light {% if sex == 9 %}active{% endif %}">
+                            <input type="radio" name="sex" value="9">Secret
+                        </label>
+                    </div>
+                </div>
+                <button class="btn btn-outline-primary" type="submit">Change</button>
+            </form>
+        </div>
+        <div class="col-3"></div>
+    </div>
+</div>
 {% endblock %}

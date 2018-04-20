@@ -27,7 +27,6 @@ def after_page_range(page, arg=0):
         return range(current_page_no+1, page.paginator.num_pages+1)
     return range(current_page_no+1, current_page_no+1+arg)
 
-
 @register.filter(name='liked_by')
 def liked_by(article, user):
     followers = article.followers

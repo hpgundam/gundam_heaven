@@ -121,7 +121,6 @@ def comment_article(request, pk):
         signal_notification.send(article.author, subject=request.user, verb='commented your comment', comment=int(reply_to), article=article, type=2)
     return redirect(reverse('gundam_heaven:article-detail', kwargs={'pk': article.id}))
 
-
 @require_GET
 def get_full_chat(request, article_pk, comment_pk):
     cur_page_no = request.GET.get('page', 1)
@@ -129,6 +128,5 @@ def get_full_chat(request, article_pk, comment_pk):
     comments_all = article.comments.filter(Q(id=comment_pk)|Q(reply_to_id=comment_pk)).order_by('floor')
     comments = get_current_page(comments_all, amt_per_page=3, cur_page_no=cur_page_no)
     return render(request, 'gundam_heaven/comment_full_chat.html', {'comments': comments, 'article': article})
-
 
 

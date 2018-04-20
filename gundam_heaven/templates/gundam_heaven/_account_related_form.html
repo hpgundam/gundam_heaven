@@ -4,6 +4,13 @@
         <div class="col-6">
             <div class="h3 text-center">{{ form_title }}</div>
             <form action="{{ action }}" method="post" role="form">
+                <div>
+                    <ul class="list-unstyled">
+                    {% for error in form.non_field_errors %}
+                        <li class="alert-danger" style="padding: 10px;border-radius: 10px;">{{ error }}</li>
+                    {% endfor %}
+                    </ul>
+                </div>
                 {% csrf_token %}
                 {% for field in form %}
                     <div class="form-group">
@@ -17,6 +24,9 @@
                             </ul>
                         {% endif %}
                     </div>
+                    {% if next %}
+                        <input hidden="hidden" value="{{ next }}" name="next"/>
+                    {% endif %}
                 {% endfor %}
                 <button class="btn btn-outline-primary" type="submit">{{ btn_text }}</button>
             </form>
@@ -27,6 +37,5 @@
 
 
 <script>
-    $('form input').addClass('form-control');
     $('form select').addClass('custom-select');
 </script>

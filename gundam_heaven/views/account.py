@@ -3,6 +3,10 @@ from django.urls import reverse_lazy
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm
 from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import PasswordResetView as PRV, \
+    PasswordResetConfirmView as PRConV, PasswordResetDoneView as PRDV, \
+    PasswordResetCompleteView as PRComV
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.views.decorators.http import require_POST, require_GET, require_http_methods
@@ -14,7 +18,7 @@ import glob
 import json
 
 from gundam_heaven.models import UserInfo
-from gundam_heaven.forms import FileUploadForm, UserInfoChangeForm
+from gundam_heaven.forms import FileUploadForm
 from gundam_heaven.utils import get_current_page
 
 from gundam_heaven.signals import signal_notification
@@ -57,18 +61,22 @@ def detail(request, id):
 
 @require_http_methods(['GET', 'POST'])
 def log_in(request):
+    redirect_to = request.POST.get('next', request.GET.get('next', None))
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
             login(request, form.user_cache)
             messages.success(request, 'successfully logged in')
-            return redirect(reverse('gundam_heaven:user-detail', kwargs={'id': form.user_cache.id}))
+            if redirect_to is not None:
+                return  redirect(redirect_to)
+            else:
+                return redirect(reverse('gundam_heaven:user-detail', kwargs={'id': form.user_cache.id}))
         else:
             messages.error(request, 'log in failed.')
-            return render(request, 'gundam_heaven/login.html', {'form': form, 'action': reverse_lazy('gundam_heaven:login')})
+            return render(request, 'gundam_heaven/login.html', {'form': form, 'action': reverse_lazy('gundam_heaven:login'), 'next': redirect_to})
     elif request.method == 'GET':
         form = AuthenticationForm()
-        return render(request, 'gundam_heaven/login.html', {'form': form, 'action': reverse_lazy('gundam_heaven:login')})
+        return render(request, 'gundam_heaven/login.html', {'form': form, 'action': reverse_lazy('gundam_heaven:login'), 'next': redirect_to})
 
 @login_required(login_url=reverse_lazy('gundam_heaven:login'))
 def log_out(request):
@@ -129,22 +137,44 @@ def change_photo(request):
 @login_required(login_url=reverse_lazy('gundam_heaven:login'))
 @require_http_methods(['GET', 'POST'])
 def change_info(request):
+    context = {}
+    user = request.user
     try:
-        userinfo = request.user.userinfo
+        userinfo = user.userinfo
     except ObjectDoesNotExist:
-        user = request.user
         userinfo = UserInfo(nickname=user.username, owner=user)
+    context['nickname'] = userinfo.nickname
+    context['age'] = userinfo.age
+    context['sex'] = userinfo.sex
+    context['email'] = user.email
     if request.method == 'POST':
-        form = UserInfoChangeForm(request.POST, instance=userinfo)
-        if form.is_valid():
-            form.save()
+        # form = UserInfoChangeForm(request.POST)
+        # if form.is_valid():
+            # user.email = form.cleaned_data['email']
+            # userinfo.nickname = form.cleaned_data['nickname']
+            # userinfo.age = form.cleaned_data['age']
+            # userinfo.sex = form.cleaned_data['sex']
+        email = request.POST['email']
+        nickname = request.POST['nickname']
+        age = int(request.POST['age'])
+        sex = int(request.POST['sex'])
+        try:
+            user.email = email
+            userinfo.nickname = nickname
+            userinfo.age = age
+            userinfo.sex = sex
+            user.save()
+            userinfo.save()
             messages.success(request, 'successfully changed your information')
             return redirect(reverse('gundam_heaven:user-detail', kwargs={'id': request.user.id}))
-        else:
-            return render(request, 'gundam_heaven/change_userinfo.html', {'form': form, 'action': reverse_lazy('gundam_heaven:change-info')})
+        except Exception as e:
+        # else:
+            context['action'] = reverse_lazy('gundam_heaven:change-info')
+            return render(request, 'gundam_heaven/change_userinfo.html', context)
     elif request.method == 'GET':
-        form = UserInfoChangeForm(instance=userinfo)
-        return render(request, 'gundam_heaven/change_userinfo.html', {'form': form, 'action': reverse_lazy('gundam_heaven:change-info')})
+        # form = UserInfoChangeForm()
+        context['action'] = reverse_lazy('gundam_heaven:change-info')
+        return render(request, 'gundam_heaven/change_userinfo.html', context)
 
 @login_required(login_url=reverse_lazy('gundam_heaven:login'))
 @require_POST
@@ -180,10 +210,23 @@ def follow_user(request, id):
         data['error'] = 'invalid action'
     return HttpResponse(json.dumps(data), content_type="application/json")
 
+class PasswordResetView(LoginRequiredMixin, PRV):
+    email_template_name = 'gundam_heaven/registration/password_reset_email.html'
+    subject_template_name = 'gundam_heaven/registration/password_reset_subject.txt'
+    success_url = reverse_lazy('gundam_heaven:password_reset_done')
+    template_name = 'gundam_heaven/registration/password_reset_form.html'
+    login_url = reverse_lazy('gundam_heaven:login')
 
+class PasswordResetConfirmView(LoginRequiredMixin, PRConV):
+    template_name = 'gundam_heaven/registration/password_reset_confirm.html'
+    success_url = reverse_lazy('gundam_heaven:password_reset_complete')
+    login_url = reverse_lazy('gundam_heaven:login')
 
+class PasswordResetDoneView(PRDV):
+    template_name = 'gundam_heaven/registration/password_reset_done.html'
 
-
+class PasswordResetCompleteView(PRComV):
+    template_name = 'gundam_heaven/registration/password_reset_complete.html'
 
 
 
