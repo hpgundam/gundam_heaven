@@ -18,6 +18,9 @@
                     </li>
                 </ul>
                 <div style="padding-top: 20px">
+                    <div class="pagination">
+                        {% include 'gundam_heaven/_pagination.html' with page=page_obj %}
+                    </div>
                     <ul class="list-group list-group-flush">
                         {% for notification in notifications %}
                             <li class="list-group-item{% if notification.has_read %} disabled {% endif %}">

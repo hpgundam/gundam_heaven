@@ -5,28 +5,37 @@
         {% if page.has_previous %}
             {% if page.number <= 6 and page.number > 1 %}
                 {% for page_no in page|pre_page_range:0 %}
-                    <li class="page-item"><a class="page-link" href="?page={{ page_no }}">{{ page_no }}</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="{{ page_no|add_url_param:request.get_full_path}}">
+{#                            <a class="page-link" href="page={{ page_no }}|add_url_param:{{ request.get_full_path }}">#}
+                            {{ page_no }}
+                        </a>
+                    </li>
                 {% endfor %}
             {% elif page.number > 6 %}
-                <li class="page-item"><a class="page-link" href="?page=1">1</a></li>
+                <li class="page-item"><a class="page-link" href="{{ 1|add_url_param:request.get_full_path}}">1</a></li>
                 <li class="page-item">...</li>
                 {% for page_no in page|pre_page_range:4 %}
-                    <li class="page-item"><a class="page-link" href="?page={{ page_no }}">{{ page_no }}</a></li>
+                    <li class="page-item"><a class="page-link" href="{{ page_no|add_url_param:request.get_full_path}}">{{ page_no }}</a></li>
                 {% endfor %}
             {% endif %}
         {% endif %}
-        <li class="page-item disabled"><a class="page-link" href="?page={{ page.number }}">{{ page.number }}</a> </li>
+        <li class="page-item disabled"><a class="page-link" href="javascript:void(0);">{{ page.number }}</a> </li>
         {% if page.has_next %}
             {% if page.paginator.num_pages <= page.number|add:4 %}
                 {% for page_no in page|after_page_range:0 %}
-                    <li class="page-item"><a class="page-link" href="?page={{ page_no }}">{{ page_no }}</a></li>
+                    <li class="page-item">
+                    <a class="page-link" href="{{ page_no|add_url_param:request.get_full_path}} ">
+                            {{ page_no }}
+                        </a>
+                    </li>
                 {% endfor %}
             {% else %}
                 {% for page_no in page|after_page_range:3 %}
-                    <li class="page-item"><a class="page-link" href="?page={{ page_no }}">{{ page_no }}</a></li>
+                    <li class="page-item"><a class="page-link" href="{{ page_no|add_url_param:request.get_full_path}}">{{ page_no }}</a></li>
                 {% endfor %}
                     <li class="page-item">...</li>
-                    <li class="page-item"><a class="page-link" href="?page={{ page.paginator.num_pages }}">{{ page.paginator.num_pages }}</a></li>
+                    <li class="page-item"><a class="page-link" href="{{ page.paginator.num_pages|add_url_param:request.get_full_path}}">{{ page.paginator.num_pages }}</a></li>
             {% endif %}
         {% endif %}
     </ul>

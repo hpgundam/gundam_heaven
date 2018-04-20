@@ -14,6 +14,7 @@ class NotificationListView(LoginRequiredMixin, ListView):
     model = Notification
     context_object_name = 'notifications'
     login_url = reverse_lazy('gundam_heaven:login')
+    paginate_by = 3
 
     def get_queryset(self):
         qs = super().get_queryset()

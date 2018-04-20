@@ -29,5 +29,9 @@ a society website about gundam created by django
 	- password reset with email
 2. article
 	- add an article to favorite
+	- search article using key word
 3. notification
+4. redis support
+5. restful api
+6. i18n
 

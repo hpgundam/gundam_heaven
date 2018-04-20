@@ -35,4 +35,15 @@ def liked_by(article, user):
         return False
     return str(user.id) in followers.split(':')
 
+@register.filter(name='add_url_param')
+def add_page_in_url(page_no, url):
+    if '?' in url:
+        base_url, params_string=url.split('?')[:2]
+        params = params_string.split('&')
+        new_params = [ p for p in params if 'page' not in p ] + [f'page={page_no}']
+        return '?'.join([base_url, '&'.join(new_params)])
+    else:
+        return '?'.join([url, f'page={page_no}'])
+
+
 
