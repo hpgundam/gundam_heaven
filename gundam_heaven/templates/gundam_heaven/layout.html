@@ -24,7 +24,7 @@
             <ul class="navbar-nav">
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'gundam_heaven:user-detail' id=user.id %}">Home</a>
+                        <a class="nav-link" href="{% url 'gundam_heaven:show_user' id=user.id %}">Home</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="javascript:void(0);" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -32,7 +32,6 @@
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             <a class="dropdown-item" href="{% url 'gundam_heaven:change-password' %}">Change Password</a>
-                            <a class="dropdown-item" href="{% url 'gundam_heaven:password_reset' %}">Reset Password</a>
                             <a class="dropdown-item" href="{% url 'gundam_heaven:logout' %}">Logout</a>
                         </div>
                     </li>
@@ -65,22 +64,20 @@
     {% block body %}{% endblock %}
 <script>
     $(document).ready(function(){
-        $('img').each(function(){
-            $(this).css('height', $(this).css('width'));
-        });
-
         $('.message-item').hide(5000);
 
         $('form input').addClass('form-control');
-    });
 
+        $('img').each(function(){
+            $(this).css('height', $(this).css('width'));
+        });
+    });
 
     $('.photo-with-name').hover(function(){
         $(this).siblings('div').show();
     }, function(){
          $(this).siblings('div').hide();
     });
-
 
 </script>
 </body>

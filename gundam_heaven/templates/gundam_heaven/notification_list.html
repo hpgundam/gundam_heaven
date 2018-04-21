@@ -28,16 +28,16 @@
                                     <div class="col-1">{% if notification.has_read %}<i class="fa fa-check"></i>{% endif %}</div>
 
                                     <div class="col-8">
-                                        <a class="link-in-noti" id="noti-sub-{{ notification.id }}" href="{% url 'gundam_heaven:user-detail' id=notification.subject.id %}">{{ notification.subject }}</a>
+                                        <a class="link-in-noti" id="noti-sub-{{ notification.id }}" href="{% url 'gundam_heaven:show_user' id=notification.subject.id %}">{{ notification.subject }}</a>
                                         {{ notification.verb }}
                                         {% if notification.comment %}
-                                            <a class="link-in-noti" id="noti-comment-{{ notification.id }}" href="{% url 'gundam_heaven:article-detail' pk=notification.article.id %}#reply_{{ notification.comment.id }}">
+                                            <a class="link-in-noti" id="noti-comment-{{ notification.id }}" href="{% url 'gundam_heaven:show_article' pk=notification.article.id %}#reply_{{ notification.comment.id }}">
                                                 {{ notification.comment.content|truncatewords:10 }}
                                             </a>
                                         {% endif %}
                                         {% if notification.article %}
                                             {% if notification.type == 2 %}in the article {% endif  %}
-                                            <a class="link-in-noti" id="noti-article-{{ notification.id }}" href="{% url 'gundam_heaven:article-detail' pk=notification.article.id %}">{{ notification.article.title }}</a>
+                                            <a class="link-in-noti" id="noti-article-{{ notification.id }}" href="{% url 'gundam_heaven:show_article' pk=notification.article.id %}">{{ notification.article.title }}</a>
                                         {% endif %}
                                     </div>
 
@@ -62,7 +62,7 @@
            data: {'csrfmiddlewaretoken': "{{ csrf_token }}", 'noti_id': id, 'forward': forward_to},
            type: "post",
            success: function(ret_data) {},
-           error: function(){console.log('ajax failed');},
+           error: function(){},
        });
     });
 </script>

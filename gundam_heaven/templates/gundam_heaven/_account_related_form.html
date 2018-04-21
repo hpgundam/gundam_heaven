@@ -29,6 +29,9 @@
                     {% endif %}
                 {% endfor %}
                 <button class="btn btn-outline-primary" type="submit">{{ btn_text }}</button>
+                {% if reset_password %}
+                    <a class="float-right" href="{% url 'gundam_heaven:password_reset' %}">reset password</a>
+                {% endif %}
             </form>
         </div>
         <div class="col-3"></div>

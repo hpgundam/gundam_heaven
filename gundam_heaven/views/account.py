@@ -3,7 +3,6 @@ from django.urls import reverse_lazy
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm
 from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import PasswordResetView as PRV, \
     PasswordResetConfirmView as PRConV, PasswordResetDoneView as PRDV, \
     PasswordResetCompleteView as PRComV
@@ -40,7 +39,7 @@ def register(request):
             UserInfo.objects.create(nickname=form.cleaned_data['username'], owner=form.instance)
             login(request, form.instance)
             messages.success(request, 'successfully registered.')
-            return redirect(reverse('gundam_heaven:user-detail', kwargs={'id': form.instance.id}))
+            return redirect(reverse('gundam_heaven:show_user', kwargs={'id': form.instance.id}))
         else:
             messages.error(request, 'register failed.')
             return render(request, 'gundam_heaven/register.html', {'form': form, 'action': reverse_lazy('gundam_heaven:register')})
@@ -70,7 +69,7 @@ def log_in(request):
             if redirect_to is not None:
                 return  redirect(redirect_to)
             else:
-                return redirect(reverse('gundam_heaven:user-detail', kwargs={'id': form.user_cache.id}))
+                return redirect(reverse('gundam_heaven:show_user', kwargs={'id': form.user_cache.id}))
         else:
             messages.error(request, 'log in failed.')
             return render(request, 'gundam_heaven/login.html', {'form': form, 'action': reverse_lazy('gundam_heaven:login'), 'next': redirect_to})
@@ -93,7 +92,7 @@ def change_password(request):
             form.save()
             messages.success(request, 'successfully changed your password')
             login(request, request.user)
-            return redirect(reverse('gundam_heaven:user-detail', kwargs={'id': request.user.id}))
+            return redirect(reverse('gundam_heaven:show_user', kwargs={'id': request.user.id}))
         else:
             return render(request, 'gundam_heaven/change_password.html', {'form': form, 'action': reverse_lazy('gundam_heaven:password-change')})
     elif request.method == 'GET':
@@ -122,11 +121,11 @@ def change_photo(request):
             userinfo.photo = request.POST.getlist('photo')[0].lstrip(os.path.sep+os.path.basename(settings.MEDIA_ROOT)+os.path.sep)
             userinfo.save()
             messages.success(request, 'successfully changed your photo')
-            return redirect(reverse('gundam_heaven:user-detail', kwargs={'id': request.user.id}))
+            return redirect(reverse('gundam_heaven:show_user', kwargs={'id': request.user.id}))
         if form.is_valid():
             form.save()
             messages.success(request, 'successfully changed your photo')
-            return redirect(reverse('gundam_heaven:user-detail', kwargs={'id': request.user.id}))
+            return redirect(reverse('gundam_heaven:show_user', kwargs={'id': request.user.id}))
         else:
             messages.error(request, 'upload file failed')
             return render(request, 'gundam_heaven/upload_photo.html', {'form': form, 'default_photos': default_photos_url})
@@ -166,7 +165,7 @@ def change_info(request):
             user.save()
             userinfo.save()
             messages.success(request, 'successfully changed your information')
-            return redirect(reverse('gundam_heaven:user-detail', kwargs={'id': request.user.id}))
+            return redirect(reverse('gundam_heaven:show_user', kwargs={'id': request.user.id}))
         except Exception as e:
         # else:
             context['action'] = reverse_lazy('gundam_heaven:change-info')
@@ -210,17 +209,15 @@ def follow_user(request, id):
         data['error'] = 'invalid action'
     return HttpResponse(json.dumps(data), content_type="application/json")
 
-class PasswordResetView(LoginRequiredMixin, PRV):
+class PasswordResetView(PRV):
     email_template_name = 'gundam_heaven/registration/password_reset_email.html'
     subject_template_name = 'gundam_heaven/registration/password_reset_subject.txt'
     success_url = reverse_lazy('gundam_heaven:password_reset_done')
     template_name = 'gundam_heaven/registration/password_reset_form.html'
-    login_url = reverse_lazy('gundam_heaven:login')
 
-class PasswordResetConfirmView(LoginRequiredMixin, PRConV):
+class PasswordResetConfirmView(PRConV):
     template_name = 'gundam_heaven/registration/password_reset_confirm.html'
     success_url = reverse_lazy('gundam_heaven:password_reset_complete')
-    login_url = reverse_lazy('gundam_heaven:login')
 
 class PasswordResetDoneView(PRDV):
     template_name = 'gundam_heaven/registration/password_reset_done.html'

@@ -21,7 +21,7 @@
                     </div>
                     <div class="col-8 h4">{{ article.title }}</div>
                     {% if user != article.author %}
-                        <div class="small col-2" style="padding-top: 10px;">Author: <a href="{% url 'gundam_heaven:user-detail' article.author.id %}">{{ article.author.userinfo.nickname }}</a></div>
+                        <div class="small col-2" style="padding-top: 10px;">Author: <a href="{% url 'gundam_heaven:show_user' article.author.id %}">{{ article.author.userinfo.nickname }}</a></div>
                     {% endif %}
                 </div>
                 <hr>

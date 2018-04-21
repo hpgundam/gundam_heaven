@@ -79,7 +79,7 @@ class Mark(models.Model):
         unique_together = ('article', 'tag')
 
 class Comment(models.Model):
-    commentor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='commenting')
+    commenter = models.ForeignKey(User, on_delete=models.CASCADE, related_name='commenting')
     article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='comments')
     reply_to = models.ForeignKey('self', on_delete=models.CASCADE, related_name='reply_from', blank=True, null=True)
     floor = models.PositiveIntegerField()

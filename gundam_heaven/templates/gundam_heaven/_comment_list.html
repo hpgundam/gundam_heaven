@@ -21,15 +21,15 @@
                 <li class="list-group-item">
                     <div class="row">
                         <div class="col-6">
-                            <a href="{% url 'gundam_heaven:user-detail' comment.commentor.id %}">
-                                <img src="{{ comment.commentor.userinfo.photo.url }}" class="img-thumbnail img-fluid photo-user-tiny"/>
-                                {{ comment.commentor.userinfo.nickname }}
+                            <a href="{% url 'gundam_heaven:show_user' comment.commenter.id %}">
+                                <img src="{{ comment.commenter.userinfo.photo.url }}" class="img-thumbnail img-fluid photo-user-tiny"/>
+                                {{ comment.commenter.userinfo.nickname }}
                             </a>
                             {% if comment.reply_to %}
                             <small> reply to </small>
-                            <a href="{% url 'gundam_heaven:user-detail' comment.reply_to.commentor.id %}">
-                                <!--<img src="{{ comment.reply_to.commentor.userinfo.photo.url }}" class="img-thumbnail img-fluid photo-user-tiny"/>-->
-                            {{ comment.reply_to.commentor.userinfo.nickname }}
+                            <a href="{% url 'gundam_heaven:show_user' comment.reply_to.commenter.id %}">
+                                <!--<img src="{{ comment.reply_to.commenter.userinfo.photo.url }}" class="img-thumbnail img-fluid photo-user-tiny"/>-->
+                            {{ comment.reply_to.commenter.userinfo.nickname }}
                             </a>
                             {% endif %}
                         </div>

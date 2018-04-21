@@ -23,13 +23,13 @@
                     <label style="padding-right: 20px;">Sex</label>
                     <div class="btn-group btn-group-toggle" data-toggle="buttons">
                         <label class="btn btn-light {% if sex == 0 %}active{% endif %}">
-                            <input type="radio" name="sex" value="0">Female
+                            <input type="radio" name="sex" value="0" {% if sex == 0 %}checked{% endif %}>Female
                         </label>
                         <label class="btn btn-light {% if sex == 1 %}active{% endif %}">
-                            <input type="radio" name="sex" value="1">Male
+                            <input type="radio" name="sex" value="1" {% if sex == 1 %}checked{% endif %}>Male
                         </label>
                         <label class="btn btn-light {% if sex == 9 %}active{% endif %}">
-                            <input type="radio" name="sex" value="9">Secret
+                            <input type="radio" name="sex" value="9" {% if sex == 9 %}checked{% endif %}>Secret
                         </label>
                     </div>
                 </div>

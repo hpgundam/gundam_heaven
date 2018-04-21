@@ -7,9 +7,9 @@
     {% for article in articles %}
         <li class="list-group-item">
             <div class="row">
-                <div class="col-6"><a href="{% url 'gundam_heaven:article-detail' pk=article.id %}">{{ article.title }}</a></div>
+                <div class="col-6"><a href="{% url 'gundam_heaven:show_article' pk=article.id %}">{{ article.title }}</a></div>
                 {% if not owner %}
-                    <div class="small">Author: <a href="{% url 'gundam_heaven:user-detail' id=article.author.id %}">{{ article.author.userinfo.nickname }}</a></div>
+                    <div class="small">Author: <a href="{% url 'gundam_heaven:show_user' id=article.author.id %}">{{ article.author.userinfo.nickname }}</a></div>
                 {% endif %}
             </div>
             <div class="row">

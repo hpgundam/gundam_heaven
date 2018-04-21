@@ -34,7 +34,7 @@ def post_article(request):
         messages.success(request, 'successfully posted an article')
         for follower in request.user.followers.all():
             signal_notification.send(follower.follower, subject=request.user, verb='posted an article', article=article, type=3)
-        return redirect(reverse('gundam_heaven:article-detail', kwargs={'pk': article.id}))
+        return redirect(reverse('gundam_heaven:show_article', kwargs={'pk': article.id}))
     elif request.method == 'GET':
         return render(request, 'gundam_heaven/post_article.html',{'tags': tags})
 
@@ -119,7 +119,7 @@ def comment_article(request, pk):
     else:
         request.user.commenting.create(article=article, reply_to_id=int(reply_to), content=content, floor=max_floor + 1)
         signal_notification.send(article.author, subject=request.user, verb='commented your comment', comment=int(reply_to), article=article, type=2)
-    return redirect(reverse('gundam_heaven:article-detail', kwargs={'pk': article.id}))
+    return redirect(reverse('gundam_heaven:show_article', kwargs={'pk': article.id}))
 
 @require_GET
 def get_full_chat(request, article_pk, comment_pk):
