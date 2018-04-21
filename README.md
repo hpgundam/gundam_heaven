@@ -25,7 +25,7 @@ a society website about gundam created by django
 		- your followee post an article
 	- mark notification read if it's clicked.
 	- display notification in category
-
+4. restful api
 ## not implemented
 1. account
 	- add mq for email
@@ -35,6 +35,5 @@ a society website about gundam created by django
 	- get article list from tags
 3. notification
 4. redis support
-5. restful api
-6. i18n
+5. i18n
 
