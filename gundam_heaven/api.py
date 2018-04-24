@@ -9,7 +9,7 @@ from rest_framework.exceptions import APIException
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django.http.response import Http404
-
+from django.db.models import Q
 
 
 class UserViewSet(ModelViewSet):
@@ -50,6 +50,19 @@ class ArticleViewSet(ModelViewSet):
     queryset = models.Article.objects.all()
     serializer_class = serializers.AritcleSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly)
+
+    def get_queryset(self):
+        query_set = super().get_queryset()
+        filters = {}
+        tag = self.request.GET.get('tag', None)
+        if tag is not None:
+            filters['tags__name'] = tag
+        author = self.request.GET.get('author', None)
+        if author is not None:
+            filters['author__userinfo__nickname'] = author
+        return query_set.filter(**filters)
+
+
 
 
 class TagViewSet(ModelViewSet):

@@ -54,8 +54,13 @@ def detail(request, id):
     title = 'Home Page of {}'.format(user.username)
     followers = [ follower.follower for follower in user.followers.all() ]
     followees = [ followee.followee for followee in user.followees.all() ]
-    articles_all = user.articles.order_by('-update_time')
-    articles = get_current_page(articles_all, amt_per_page=1, cur_page_no=int(cur_page_no))
+    tag = request.GET.get('tag', None)
+    if tag is None:
+        articles_all = user.articles.order_by('-update_time')
+    else:
+        articles_all = user.articles.filter(tags__name=tag).order_by('-update_time')
+    articles = get_current_page(articles_all, amt_per_page=5, cur_page_no=int(cur_page_no))
+    # import pdb;pdb.set_trace()
     return render(request, 'gundam_heaven/user_detail.html', {'owner': user, 'title': title, 'followers': followers, 'followees': followees, 'articles': articles})
 
 @require_http_methods(['GET', 'POST'])

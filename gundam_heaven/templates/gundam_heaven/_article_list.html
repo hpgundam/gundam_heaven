@@ -20,10 +20,13 @@
                 <small>Tags : </small>
                 {% for tag in article.tags.all %}
                     <div class="btn-group">
-                        <a class="btn btn-outline-success btn-sm" href="#">{{ tag.name }}</a>
+                        <a class="btn btn-outline-success btn-sm tag-{{ tag.name }}" href="?tag={{ tag.name }}">{{ tag.name }}</a>
                     </div>
                 {% endfor %}
             </div>
         </li>
     {% endfor %}
 </ul>
+<script>
+    $('.tag-{{ request.GET.tag }}').addClass('disabled');
+</script>

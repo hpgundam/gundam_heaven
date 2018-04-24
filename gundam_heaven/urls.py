@@ -28,7 +28,7 @@ article_urlpatterns = [
 ]
 
 notification_urlpatterns = [
-    path('', views.NotificationListView.as_view(), name='notification-list'),
+    path('', views.NotificationListView.as_view(), name='notification_list'),
     path('read/', views.read_notification, name='read-notification'),
 ]
 

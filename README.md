@@ -17,6 +17,7 @@ a society website about gundam created by django
 	- comment an article/reply to a comment
 	- check full chat of comments
 	- mark article with tags
+	- get article list from tags
 3. notification
 	- create notification when:
 		- somebody follow/unfollow you
@@ -32,7 +33,6 @@ a society website about gundam created by django
 2. article
 	- add an article to favorite
 	- search article using key word
-	- get article list from tags
 3. notification
 4. redis support
 5. i18n
