@@ -45,4 +45,10 @@ def add_page_in_url(page_no, url):
         return '?'.join([url, f'page={page_no}'])
 
 
-
+@register.filter(name='favorite_already')
+def favorite_already(article, user):
+    for folder in user.favoritefolder_set.all():
+        if article in folder.articles.all():
+            return True
+    else:
+        return False

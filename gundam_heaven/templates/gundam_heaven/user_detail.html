@@ -1,94 +1,14 @@
 {% extends 'gundam_heaven/layout.html' %}
-{% load account_tags %}
 {% block body %}
     <div class="container">
+    <div style="background-color: #eee;margin-bottom: 10px;border-radius: 5px;">
+        <nav class="nav nav-fill">
+            <a class="nav-item nav-link" href="{% url 'gundam_heaven:show_user' owner.id %}"><i class="fa fa-home fa-lg"></i> My Page</a>
+            <a class="nav-item nav-link" href="{% url 'gundam_heaven:favorite_list' owner.id %}"><i class="fa fa-star-o fa-lg"></i> My Favorite</a>
+        </nav>
+    </div>
         <div class="row">
-            <div class="col-3 zone-userinfo">
-                {% if user == owner %}
-                    <a href="{% url 'gundam_heaven:change-photo' %}">
-                        <img class="img-thumbnail img-fluid photo-user-normal" src="{{ owner.userinfo.photo.url }}"  alt="user photo"/>
-                    </a>
-                    <a href="{% url 'gundam_heaven:change-info' %}" class="btn btn-outline-dark btn-block" style="margin-top: 10px;">Change Information</a>
-                {% else %}
-                    <img class="img-thumbnail img-fluid photo-user-normal" src="{{ owner.userinfo.photo.url }}" alt="user photo"/>
-                    <a href="javascript:void(0);" id="follow_btn" class="btn btn-outline-dark btn-block" style="margin-top: 10px;">
-                        {% if user|is_fan_of:owner %}
-                            Unfollow
-                        {% else %}
-                            Follow
-                        {% endif %}
-                    </a>
-                {% endif %}
-                <table class="table table-responsive">
-                    <tbody>
-                        <tr>
-                            <th>Nickname:</th><td>{{ owner.userinfo.nickname }}</td>
-                        </tr>
-                        <tr>
-                            <th>Age:</th><td>{{ owner.userinfo.age }}</td>
-                        </tr>
-                        <tr>
-                            <th>Sex:</th>
-                            <td>
-                                {% if owner.userinfo.sex == 0 %}
-                                    <i class="fa fa-mars"></i>
-                                {% elif owner.userinfo.sex == 1 %}
-                                    <i class="fa fa-venus"></i>
-                                {% else %}
-                                    <i class="fa fa-genderless"></i>
-                                {% endif %}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="col-6 zone-articles" style="padding-top:20px;">
-                <div class="row" style="padding-bottom: 20px;">
-                    <div class="col-6 h3 text-center">Article List</div>
-                    {% if user == owner %}
-                        <div class="col-6">
-                            <a href="{% url 'gundam_heaven:post-article' %}" class="btn btn-outline-secondary float-right">Post an article</a>
-                        </div>
-                    {% endif %}
-                </div>
-                {% include 'gundam_heaven/_article_list.html' %}
-            </div>
-            <div class="col-3 zone-extra">
-                <!-- fan list-->
-                <div>
-                    <div style="padding-top:10px;padding-bottom:10px;">Fan List:</div>
-                    {% include "gundam_heaven/_user_list.html" with users=followers %}
-                </div>
-                <!-- follow list-->
-                <div>
-                    <div style="padding-top:10px;padding-bottom:10px;">Follow List:</div>
-                    {% include "gundam_heaven/_user_list.html" with users=followees %}
-                </div>
-            </div>
+            {% block user %}{% endblock %}
         </div>
     </div>
-<script>
-    $('#follow_btn').on("click", function(){
-        var cur_obj = $(this);
-        var old_text = $.trim(cur_obj.text());
-        var action = old_text.toLowerCase();
-        if(old_text == 'Follow'){
-            var new_text = 'Unfollow';
-        }else{
-            var new_text = 'Follow';
-        }
-        $.ajax({
-            url: "{% url 'gundam_heaven:follow-user' owner.id %}",
-            type: "post",
-            data: {'action': action, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
-            success: function(ret_data){
-                if(ret_data.result == 'success'){
-                    cur_obj.text(new_text);
-                    $('.messages').append('<li class="message-item alert-success">'+ret_data.message+'</li>');
-                    $('.message-item').hide(5000);
-                }
-            }
-        });
-    });
-</script>
 {% endblock %}

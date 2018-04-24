@@ -1,15 +1,16 @@
-from gundam_heaven.models import Article, Tag, Mark, Comment
+from gundam_heaven.models import Article, Tag, Mark, FavoriteFolder, ArticleFollow
 from gundam_heaven.utils import get_current_page
 from gundam_heaven.signals import signal_notification
 
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.urls import reverse_lazy
-from django.views.generic import DetailView
+from django.views.generic import DetailView, ListView
 from django.views.decorators.http import require_http_methods, require_POST, require_GET
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import HttpResponse
 from django.db.models import Max, Q
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 import json
@@ -105,7 +106,6 @@ def like_article(request, pk):
         data['error'] = 'invalid action'
     return HttpResponse(json.dumps(data), content_type='application/json')
 
-
 @login_required(login_url=reverse_lazy('gundam_heaven:login'))
 @require_POST
 def comment_article(request, pk):
@@ -128,5 +128,38 @@ def get_full_chat(request, article_pk, comment_pk):
     comments_all = article.comments.filter(Q(id=comment_pk)|Q(reply_to_id=comment_pk)).order_by('floor')
     comments = get_current_page(comments_all, amt_per_page=3, cur_page_no=cur_page_no)
     return render(request, 'gundam_heaven/comment_full_chat.html', {'comments': comments, 'article': article})
+
+@login_required(login_url=reverse_lazy('gundam_heaven:login'))
+def add_article_to_favorite(request, article_pk):
+    if request.method == 'POST':
+        folder_id = request.POST.get('folder', None)
+        if folder_id is not None:
+            folder = get_object_or_404(FavoriteFolder, id=folder_id)
+        else:
+            folder = request.user.favoritefolder_set.create(name='Default')
+        article = get_object_or_404(Article, id=article_pk)
+        ArticleFollow.objects.create(article=article, folder=folder)
+        return redirect(reverse('gundam_heaven:show_article', kwargs={'pk': article_pk}))
+    elif request.method == 'GET':
+        folders = request.user.favoritefolder_set.all()
+        return render(request, 'gundam_heaven/select_folder.html', {'folders': folders, 'article_id': article_pk})
+
+@login_required(login_url=reverse_lazy('gundam_heaven:login'))
+@require_POST
+def add_favorite_folder(request):
+    data = {}
+    try:
+        request.user.favoritefolder_set.create(name=request.POST['folder_name'])
+    except Exception as e:
+        data['result'] = 'failure'
+        data['error'] = e.args[0]
+        print(e)
+    else:
+        data['result'] = 'success'
+        data['name'] = request.POST['folder_name']
+    return HttpResponse(json.dumps(data), content_type='application/json')
+
+
+
 
 

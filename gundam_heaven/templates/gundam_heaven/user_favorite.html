@@ -1,0 +1,68 @@
+{% extends 'gundam_heaven/user_detail.html' %}
+{% block user %}
+    <div class="col-3">
+        <ul class="list-group favorite-folder-list">
+            <li class="list-group-item list-group-item-info">
+                Favorite Folders<a href="javascript:void(0);" id="btn_add_favorite_folder"><i class="fa fa-plus-square fa-lg float-right"></i></a>
+            </li>
+            <li class="list-group-item" id="new_favorite_folder_item" style="display: none;">
+                <form role="form" onsubmit="return false" action="#" id="new_favorite_folder_form">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <input id="new_favorite_folder_input" type="text" name="folder_name" required="required">
+                        <div class="input-group-append">
+                            <button id="new_favorite_folder_btn" class="btn btn-outline-secondary" onclick="add_favorite_folder(this)">Add</button>
+                        </div>
+                    </div>
+                </form>
+            </li>
+            {% if folders %}
+                {% for folder in folders %}
+                    <a href="?folder={{ folder.id }}" class="list-group-item list-group-item-action {% if current_folder == folder.id %} active {% endif %}">
+                        {{ folder.name }}
+                    </a>
+                {% endfor %}
+            {% else %}
+                <li class="list-group-item">Default</li>
+            {% endif %}
+        </ul>
+
+    </div>
+    <div class="col-6">
+        {% include 'gundam_heaven/_article_list.html' %}
+    </div>
+    <div class="col-3"></div>
+<script>
+    $('#btn_add_favorite_folder').on('click', function(){
+        var display = $('#new_favorite_folder_item').css('display');
+        if(display == 'none'){
+            $('#new_favorite_folder_item').show();
+            $('#new_favorite_folder_input').focus();
+            $(this).children('i').removeClass('fa-plus-square');
+            $(this).children('i').addClass('fa-minus-square');
+        }else{
+            $('#new_favorite_folder_item').hide();
+            $(this).children('i').removeClass('fa-minus-square');
+            $(this).children('i').addClass('fa-plus-square');
+        }
+    });
+
+    function add_favorite_folder(obj){
+        var cur_obj = $(obj);
+        var folder_name = cur_obj.parents('div').siblings('#new_favorite_folder_input').val();
+        $.ajax({
+           url: "{% url 'gundam_heaven:add_favorite_folder' %}",
+           type: "post",
+           data: {'csrfmiddlewaretoken': '{{ csrf_token }}', 'folder_name': folder_name },
+           success: function(ret_data){
+               if(ret_data.result == 'success') {
+                   $('#new_favorite_folder_item').after('<li class="list-group-item">' + ret_data.name + '</li>');
+               }else if(ret_data.result == 'failure'){
+
+               }
+           },
+        });
+    }
+
+</script>
+{% endblock %}

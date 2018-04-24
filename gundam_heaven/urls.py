@@ -16,7 +16,8 @@ account_urlpatterns = [
     path('reset/done/', views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
     path('change_photo/', views.change_photo, name='change-photo'),
     path('change_info/', views.change_info, name='change-info'),
-    path('<int:id>/follow/', views.follow_user, name='follow-user'),
+    path('follow/<int:id>/', views.follow_user, name='follow-user'),
+    path('<int:id>/favorite/', views.FavoriteFolderListView.as_view(), name='favorite_list'),
 ]
 
 article_urlpatterns = [
@@ -25,11 +26,17 @@ article_urlpatterns = [
     path('<int:pk>/like/', views.like_article, name='like-article'),
     path('<int:pk>/comment/', views.comment_article, name='comment-article'),
     path('<int:article_pk>/comment/<int:comment_pk>/', views.get_full_chat, name='full-chat'),
+    path('<int:article_pk>/favorite/', views.add_article_to_favorite, name='add_article_to_favorite'),
+    # path('<int:article_pk>/comment/<int:comment_pk>/', views.get_full_chat, name='full-chat'),
 ]
 
 notification_urlpatterns = [
     path('', views.NotificationListView.as_view(), name='notification_list'),
     path('read/', views.read_notification, name='read-notification'),
+]
+
+favorite_urlpatterns = [
+    path('add/', views.add_favorite_folder, name='add_favorite_folder'),
 ]
 
 #api route
@@ -48,5 +55,6 @@ urlpatterns = [
     path('account/', include(account_urlpatterns)),
     path('article/', include(article_urlpatterns)),
     path('notification/', include(notification_urlpatterns)),
+    path('favorite/', include(favorite_urlpatterns)),
     path('api/', include(router.urls)),
 ]

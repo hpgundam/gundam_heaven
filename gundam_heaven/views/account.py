@@ -10,6 +10,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.views.decorators.http import require_POST, require_GET, require_http_methods
 from django.http import HttpResponse
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import ListView
+
+from gundam_heaven.models import FavoriteFolder
 
 from django.conf import settings
 import os
@@ -61,7 +65,7 @@ def detail(request, id):
         articles_all = user.articles.filter(tags__name=tag).order_by('-update_time')
     articles = get_current_page(articles_all, amt_per_page=5, cur_page_no=int(cur_page_no))
     # import pdb;pdb.set_trace()
-    return render(request, 'gundam_heaven/user_detail.html', {'owner': user, 'title': title, 'followers': followers, 'followees': followees, 'articles': articles})
+    return render(request, 'gundam_heaven/user_home_page.html', {'owner': user, 'title': title, 'followers': followers, 'followees': followees, 'articles': articles})
 
 @require_http_methods(['GET', 'POST'])
 def log_in(request):
@@ -231,6 +235,33 @@ class PasswordResetCompleteView(PRComV):
     template_name = 'gundam_heaven/registration/password_reset_complete.html'
 
 
+class FavoriteFolderListView(ListView):
+    model = FavoriteFolder
+    queryset = FavoriteFolder.objects.all()
+    template_name = 'gundam_heaven/user_favorite.html'
+    context_object_name = 'folders'
 
+    def get_queryset(self):
+        query_set = super().get_queryset()
+        return query_set.filter(owner_id = self.kwargs['id'])
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(object_list=object_list, kwargs=kwargs)
+        context['owner'] = get_object_or_404(User, id=self.kwargs['id'])
+        folder_id = self.request.GET.get('folder', None)
+        user = get_object_or_404(User, id=self.kwargs['id'])
+        if folder_id is None:
+            folder = user.favoritefolder_set.first()
+            if folder is None:
+                folder = user.favoritefolder_set.create(name='Default')
+            folder_id = folder.id
+        else:
+            folder_id = int(folder_id)
+            folder = get_object_or_404(FavoriteFolder, id=folder_id)
+        article_all = folder.articles.all()
+        cur_page_no = self.request.GET.get('page', 1)
+        articles = get_current_page(article_all, amt_per_page=1, cur_page_no=cur_page_no)
+        context['articles'] = articles
+        context['current_folder'] = folder_id
+        return context
 

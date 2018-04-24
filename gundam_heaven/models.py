@@ -3,6 +3,7 @@ from django.db import models
 # Create your models here.
 from django.contrib.auth.models import User
 
+User = User
 
 SEX_CHOICES = (
     (0, 'Female'),
@@ -53,6 +54,9 @@ class Article(models.Model):
 
     def __str__(self):
         return self.__repr__()
+
+    class Meta:
+        ordering = ('-update_time', )
 
 
 class Tag(models.Model):
@@ -106,10 +110,23 @@ class Notification(models.Model):
         ordering = ('has_read', '-create_time')
 
 
+class FavoriteFolder(models.Model):
+    name = models.CharField(max_length=100)
+    create_time = models.DateTimeField(auto_now_add=True)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    articles = models.ManyToManyField(Article, through='ArticleFollow')
+
+    class Meta:
+        unique_together = (('name', 'owner'), )
+        ordering = ['-create_time']
 
 
+class ArticleFollow(models.Model):
+    folder = models.ForeignKey(FavoriteFolder, on_delete=models.CASCADE)
+    article = models.ForeignKey(Article, on_delete=models.CASCADE)
+    create_time = models.DateTimeField(auto_now_add=True)
 
-
-
+    class Meta:
+        unique_together = ('folder', 'article')
 
 

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% load static %}
+	<link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap-4.0.0-dist/css/bootstrap.min.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'font/font-awesome-4.7.0/css/font-awesome.min.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/mystyle.css' %}">
+    <script type="text/javascript" src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="{% static 'js/bootstrap-4.0.0-dist/js/bootstrap.min.js' %}"></script>
+    <title>Title</title>
+</head>
+<body>
+<div class="container" style="margin: 20px;">
+    <div class="row">
+        <div class="col-12">
+            <div class="h4">Please choose a folder:</div>
+            <form action="{% url 'gundam_heaven:add_article_to_favorite' article_pk=article_id %}" method="post" role="form">
+                {% csrf_token %}
+                {% if folders %}
+                    <div class="btn-group-vertical btn-group-toggle btn-block" data-toggle="buttons">
+                        {% for folder in folders %}
+                            <label class="btn btn-outline-secondary text-left">
+                                <input type="radio" name="folder" value="{{ folder.id }}">{{ folder.name }}
+                            </label>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="btn-group-vertical btn-group-toggle btn-block" data-toggle="buttons">
+                        <label class="btn btn-outline-secondary text-left active">
+                                <input type="radio" checked="checked">Default
+                        </label>
+                    </div>
+                {% endif %}
+                <button type="submit" class="btn btn-outline-info btn-block" value="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
