@@ -116,6 +116,12 @@ class FavoriteFolder(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     articles = models.ManyToManyField(Article, through='ArticleFollow')
 
+    def __repr__(self):
+        return '<FavoriteFolder:{}>'.format(self.name)
+
+    def __str__(self):
+        return self.__repr__()
+
     class Meta:
         unique_together = (('name', 'owner'), )
         ordering = ['-create_time']

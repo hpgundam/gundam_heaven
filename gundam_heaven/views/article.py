@@ -146,6 +146,23 @@ def add_article_to_favorite(request, article_pk):
 
 @login_required(login_url=reverse_lazy('gundam_heaven:login'))
 @require_POST
+def remove_article_from_favorite(request, article_pk):
+    data = {}
+    try:
+        article = get_object_or_404(Article, id=article_pk)
+        folders = request.user.favoritefolder_set.all()
+        for folder in folders:
+            if article in folder.articles.all():
+                ArticleFollow.objects.get(article=article, folder=folder).delete()
+                break
+    except Exception as e:
+        data['result'] = 'failure'
+        data['error'] = e.args[0]
+    data['result'] = 'success'
+    return HttpResponse(json.dumps(data), content_type='application/json')
+
+@login_required(login_url=reverse_lazy('gundam_heaven:login'))
+@require_POST
 def add_favorite_folder(request):
     data = {}
     try:

@@ -27,7 +27,7 @@ article_urlpatterns = [
     path('<int:pk>/comment/', views.comment_article, name='comment-article'),
     path('<int:article_pk>/comment/<int:comment_pk>/', views.get_full_chat, name='full-chat'),
     path('<int:article_pk>/favorite/', views.add_article_to_favorite, name='add_article_to_favorite'),
-    # path('<int:article_pk>/comment/<int:comment_pk>/', views.get_full_chat, name='full-chat'),
+    path('<int:article_pk>/favorite/remove/', views.remove_article_from_favorite, name='remove_article_from_favorite'),
 ]
 
 notification_urlpatterns = [

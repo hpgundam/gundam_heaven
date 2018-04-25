@@ -21,7 +21,13 @@
                     </div>
                     <div class="col-1">
                         <a class="btn btn-outline-primary {% if user == article.author %}disabled{% endif %}" href="javascript:void(0);" id="btn_favorite">
-                            <i class="fa {% if article|favorite_already:user %}fa-star{% else %}fa-star-o{% endif %} fa-lg"></i>
+                            {% if article|favorite_already:user %}
+                                <i class="fa fa-star fa-lg"> {{ article.favoritefolder_set.count }}</i>
+                                <p hidden="hidden">unfollow</p>
+                            {% else %}
+                                <i class="fa fa-star-o fa-lg"> {{ article.favoritefolder_set.count }}</i>
+                                <p hidden="hidden">follow</p>
+                            {% endif %}
                         </a>
                     </div>
                     <div class="col-8 h4" style="text-align: center;">{{ article.title }}</div>
@@ -70,7 +76,29 @@
     });
 
     $('#btn_favorite').on('click', function(){
-       window.open("{% url 'gundam_heaven:add_article_to_favorite' article_pk=article.id %}", "newwindow", "height=300, width=600, top=0, left=0, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no, status=no, location=no");
+        var cur_obj = $(this);
+        var action = $.trim(cur_obj.children('p').text());
+        if(action == 'follow'){
+            window.open("{% url 'gundam_heaven:add_article_to_favorite' article_pk=article.id %}", "newwindow", "height=300, width=600, top=0, left=0, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no, status=no, location=no");
+        }else if(action == 'unfollow'){
+            $.ajax({
+               url: "{% url 'gundam_heaven:remove_article_from_favorite' article_pk=article.id %}",
+               type: "post",
+               data: {"csrfmiddlewaretoken": "{{ csrf_token }}"},
+               success: function (ret_data) {
+                    if(ret_data.result == 'success'){
+                        cur_obj.children('p').text('follow');
+                        cur_obj.children('i').removeClass('fa-star');
+                        cur_obj.children('i').addClass('fa-star-o');
+                        var old_amt = cur_obj.children('i').text();
+                        cur_obj.children('i').text(' '+(parseInt(old_amt)-1).toString());
+                    }else if(ret_data.result == 'failure'){
+                        alert(ret_data.error);
+                    }
+               },
+               error: function () {alert('ajax failed.')},
+            });
+        }
     });
 </script>
 {% endblock %}
