@@ -2,9 +2,9 @@
 {% block body %}
     <div class="container">
     <div style="background-color: #eee;margin-bottom: 10px;border-radius: 5px;">
-        <nav class="nav nav-fill">
-            <a class="nav-item nav-link" href="{% url 'gundam_heaven:show_user' owner.id %}"><i class="fa fa-home fa-lg"></i> My Page</a>
-            <a class="nav-item nav-link" href="{% url 'gundam_heaven:favorite_list' owner.id %}"><i class="fa fa-star-o fa-lg"></i> My Favorite</a>
+        <nav class="nav nav-pills nav-fill">
+            <a class="nav-item nav-link user-tab" href="{% url 'gundam_heaven:show_user' owner.id %}"><i class="fa fa-home fa-lg"></i> My Page</a>
+            <a class="nav-item nav-link user-tab" href="{% url 'gundam_heaven:favorite_list' owner.id %}"><i class="fa fa-star-o fa-lg"></i> My Favorite</a>
         </nav>
     </div>
         <div class="row">

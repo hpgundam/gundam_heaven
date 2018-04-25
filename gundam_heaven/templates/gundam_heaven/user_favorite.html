@@ -18,9 +18,13 @@
             </li>
             {% if folders %}
                 {% for folder in folders %}
-                    <a href="?folder={{ folder.id }}" class="list-group-item list-group-item-action {% if current_folder == folder.id %} active {% endif %}">
-                        {{ folder.name }}
-                    </a>
+                    <div id="folder-item-{{ folder.id }}" class="folder-item list-group-item  {% if current_folder == folder.id %} active {% endif %}">
+                        <a style="color: gold;" class="font-weight-bold" href="?folder={{ folder.id }}">{{ folder.name }}</a>
+                        {% if folder.name != 'Default' %}
+                            <a href="javascript:void(0);" class="float-right btn-colon" style="color: #0b2e13;"> :  : </a>
+                            <button class="btn btn-danger btn-block btn-delete-folder" style="margin-top: 20px;display: none">delete</button>
+                        {% endif %}
+                    </div>
                 {% endfor %}
             {% else %}
                 <li class="list-group-item">Default</li>
@@ -56,7 +60,12 @@
            data: {'csrfmiddlewaretoken': '{{ csrf_token }}', 'folder_name': folder_name },
            success: function(ret_data){
                if(ret_data.result == 'success') {
-                   $('#new_favorite_folder_item').after('<li class="list-group-item">' + ret_data.name + '</li>');
+                   if(ret_data.name != 'Default'){
+                       $('#new_favorite_folder_item').after('<li id="folder-item-'+ret_data.id+'" class="folder-item list-group-item"><a style="color: gold;" class="font-weight-bold" href="?folder=' + ret_data.id + '">' + ret_data.name + '</a><a href="javascript:void(0);" class="float-right btn-colon" style="color: #0b2e13;"> :  : </a>\n' +
+                           '                            <button class="btn btn-danger btn-block btn-delete-folder" style="margin-top: 20px;display: none">delete</button></li>');
+                   }else {
+                       $('#new_favorite_folder_item').after('<li id="folder-item-'+ret_data.id+'" class="folder-item list-group-item"><a style="color: gold;" class="font-weight-bold" href="?folder=' + ret_data.id + '">' + ret_data.name + '</a></li>');
+                   }
                }else if(ret_data.result == 'failure'){
 
                }
@@ -64,5 +73,34 @@
         });
     }
 
+    $('.favorite-folder-list').on('click', '.btn-colon', function () {
+        var cur_obj = $(this);
+        var btn_delete = cur_obj.siblings('button');
+        var display = btn_delete.css('display');
+        if(display == 'none'){
+           btn_delete.show();
+        }else{
+            btn_delete.hide();
+        }
+    });
+
+
+    $('.favorite-folder-list').on('click', '.btn-delete-folder', function () {
+        var tgt_obj = $(this).parents('.folder-item');
+        var id_raw = tgt_obj.attr('id');
+        var id = parseInt(id_raw.substring(id_raw.lastIndexOf('-')+1));
+        var new_url = "{% url 'gundam_heaven:favorite_list' id=owner.id %}";
+        $.ajax({
+            url: "{% url 'gundam_heaven:delete_favorite_folder' %}",
+            type: "post",
+            data: {"csrfmiddlewaretoken": "{{ csrf_token }}", "folder_id": id },
+            success: function(ret_data){
+                if(ret_data.result == 'success'){
+                    location.replace(new_url);
+                }
+            },
+            error: function(){},
+        });
+    });
 </script>
 {% endblock %}

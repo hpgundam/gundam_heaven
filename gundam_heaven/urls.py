@@ -37,6 +37,7 @@ notification_urlpatterns = [
 
 favorite_urlpatterns = [
     path('add/', views.add_favorite_folder, name='add_favorite_folder'),
+    path('remove/', views.delete_favorite_folder, name='delete_favorite_folder'),
 ]
 
 #api route

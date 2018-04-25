@@ -166,7 +166,7 @@ def remove_article_from_favorite(request, article_pk):
 def add_favorite_folder(request):
     data = {}
     try:
-        request.user.favoritefolder_set.create(name=request.POST['folder_name'])
+        folder = request.user.favoritefolder_set.create(name=request.POST['folder_name'])
     except Exception as e:
         data['result'] = 'failure'
         data['error'] = e.args[0]
@@ -174,9 +174,23 @@ def add_favorite_folder(request):
     else:
         data['result'] = 'success'
         data['name'] = request.POST['folder_name']
+        data['id'] = folder.id
     return HttpResponse(json.dumps(data), content_type='application/json')
 
+@login_required(login_url=reverse_lazy('gundam_heaven:login'))
+@require_POST
+def delete_favorite_folder(request):
+    data = {}
+    try:
+        folder_id = request.POST['folder_id']
+        folder = get_object_or_404(FavoriteFolder, id=folder_id)
+        folder.delete()
+    except Exception as e:
+        data['result'] = 'failure'
+        data['error'] = e.args[0]
+    else:
+        data['result'] = 'success'
 
-
+    return HttpResponse(json.dumps(data), content_type='application/json')
 
 
