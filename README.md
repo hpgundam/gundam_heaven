@@ -21,6 +21,7 @@ a society website about gundam created by django
 	- my favorite
 	    - create/delete favorite folders
 	    - add/remove an article to/from favorite folders
+	- search article using key word
 3. notification
 	- create notification when:
 		- somebody follow/unfollow you
@@ -34,7 +35,6 @@ a society website about gundam created by django
 1. account
 	- add mq for email
 2. article
-	- search article using key word
 3. notification
 4. redis support
 5. i18n
