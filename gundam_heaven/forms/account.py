@@ -1,6 +1,14 @@
 from django import forms
-from gundam_heaven.models import UserInfo, SEX_CHOICES
+from gundam_heaven.models import UserInfo
 
+from django.contrib.auth.forms import UserCreationForm
+
+
+class RegistrationForm(UserCreationForm):
+    email = forms.EmailField(required=True, help_text='this email will be used for password reset, please input an valid one.')
+
+    class Meta(UserCreationForm.Meta):
+        fields = ('username', 'email')
 
 
 class FileUploadForm(forms.ModelForm):

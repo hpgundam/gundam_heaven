@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect, reverse
 from django.urls import reverse_lazy
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm
+from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.views import PasswordResetView as PRV, \
@@ -10,10 +10,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.views.decorators.http import require_POST, require_GET, require_http_methods
 from django.http import HttpResponse
-from django.contrib.auth.mixins import LoginRequiredMixin
+
 from django.views.generic import ListView
 
 from gundam_heaven.models import FavoriteFolder
+from gundam_heaven.forms import RegistrationForm
 
 from django.conf import settings
 import os
@@ -37,7 +38,7 @@ def register(request):
     flash messages
     '''
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = RegistrationForm(request.POST)
         if form.is_valid():
             form.save()
             UserInfo.objects.create(nickname=form.cleaned_data['username'], owner=form.instance)
@@ -48,7 +49,7 @@ def register(request):
             messages.error(request, 'register failed.')
             return render(request, 'gundam_heaven/register.html', {'form': form, 'action': reverse_lazy('gundam_heaven:register')})
     elif request.method == 'GET':
-        form = UserCreationForm()
+        form = RegistrationForm()
         return render(request, 'gundam_heaven/register.html', {'form': form, 'action': reverse_lazy('gundam_heaven:register')})
 
 @require_GET

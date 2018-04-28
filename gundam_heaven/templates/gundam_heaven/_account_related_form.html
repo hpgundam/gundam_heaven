@@ -23,6 +23,9 @@
                                 {% endfor %}
                             </ul>
                         {% endif %}
+                        {% if field.help_text %}
+                            <div class="form-control help-text" style="display: none;background-color: #9fcdff;margin-top: 20px;">{{ field.help_text|safe }}</div>
+                        {% endif %}
                     </div>
                     {% if next %}
                         <input hidden="hidden" value="{{ next }}" name="next"/>
@@ -41,4 +44,10 @@
 
 <script>
     $('form select').addClass('custom-select');
+    $('input').on('focus', function(){
+        $(this).siblings('.help-text').show();
+    });
+    $('input').blur(function(){
+        $(this).siblings('.help-text').hide();
+    });
 </script>
