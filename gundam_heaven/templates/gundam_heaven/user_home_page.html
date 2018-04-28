@@ -17,28 +17,31 @@
                 {% endif %}
             </a>
         {% endif %}
-        <table class="table table-responsive">
-            <tbody>
-            <tr>
-                <th>Nickname:</th><td>{{ owner.userinfo.nickname }}</td>
-            </tr>
-            <tr>
-                <th>Age:</th><td>{{ owner.userinfo.age }}</td>
-            </tr>
-            <tr>
-                <th>Sex:</th>
-                <td>
-                    {% if owner.userinfo.sex == 0 %}
-                        <i class="fa fa-mars"></i>
-                    {% elif owner.userinfo.sex == 1 %}
-                        <i class="fa fa-venus"></i>
-                    {% else %}
-                        <i class="fa fa-genderless"></i>
+        <ul class="list-group" style="margin-top: 10px;margin-bottom: 20px;">
+            <li class="list-group-item">
+                <div class="font-weight-bold">Nickname:</div>
+                <div class="text-center">{{ owner.userinfo.nickname }}</div>
+            </li>
+            <li class="list-group-item">
+                <div class="font-weight-bold">Sex:</div>
+                <div class="text-center">{{ owner.userinfo.sex }}</div>
+            </li>
+            <li class="list-group-item">
+                <div class="font-weight-bold">Age:</div>
+                <div class="text-center">{{ owner.userinfo.age }}</div>
+            </li>
+            {% if owner == user %}
+                <li class="list-group-item">
+                    <div class="font-weight-bold">Email:</div>
+                    <div class="text-center">{{ owner.email }}</div>
+                    {% if owner.email != owner.userinfo.email %}
+                        <form style="margin-top: 10px;" method="post" action="{% url 'gundam_heaven:validate_email' %}" >
+                            <button class="btn btn-block btn-warning">not validated yet</button>
+                        </form>
                     {% endif %}
-                </td>
-            </tr>
-            </tbody>
-        </table>
+                </li>
+            {% endif %}
+        </ul>
     </div>
     <div class="col-6 zone-articles" style="padding-top:20px;">
                 <div class="row" style="padding-bottom: 20px;">

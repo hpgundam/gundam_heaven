@@ -18,6 +18,7 @@ account_urlpatterns = [
     path('change_info/', views.change_info, name='change-info'),
     path('follow/<int:id>/', views.follow_user, name='follow-user'),
     path('<int:id>/favorite/', views.FavoriteFolderListView.as_view(), name='favorite_list'),
+    path('validate_email/', views.validate_email, name='validate_email'),
 ]
 
 article_urlpatterns = [

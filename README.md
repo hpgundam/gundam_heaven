@@ -33,6 +33,7 @@ a society website about gundam created by django
 4. restful api
 ## not implemented
 1. account
+    - email validation
 	- add mq for email
 2. article
 3. notification

@@ -157,31 +157,27 @@ def change_info(request):
     context['sex'] = userinfo.sex
     context['email'] = user.email
     if request.method == 'POST':
-        # form = UserInfoChangeForm(request.POST)
-        # if form.is_valid():
-            # user.email = form.cleaned_data['email']
-            # userinfo.nickname = form.cleaned_data['nickname']
-            # userinfo.age = form.cleaned_data['age']
-            # userinfo.sex = form.cleaned_data['sex']
-        email = request.POST['email']
-        nickname = request.POST['nickname']
-        age = int(request.POST['age'])
-        sex = int(request.POST['sex'])
+        email = request.POST.get('email', None)
+        nickname = request.POST.get('nickname', None)
+        age = request.POST.get('age', None)
+        if age is not None:
+            age = int(age)
+        sex = request.POST.get('sex', None)
+        if sex is not None:
+            sex = int(sex)
         try:
-            user.email = email
-            userinfo.nickname = nickname
-            userinfo.age = age
-            userinfo.sex = sex
+            user.email = email or user.email
+            userinfo.nickname = nickname or userinfo.nickname
+            userinfo.age = age or userinfo.age
+            userinfo.sex = sex or userinfo.sex
             user.save()
             userinfo.save()
             messages.success(request, 'successfully changed your information')
             return redirect(reverse('gundam_heaven:show_user', kwargs={'id': request.user.id}))
         except Exception as e:
-        # else:
             context['action'] = reverse_lazy('gundam_heaven:change-info')
             return render(request, 'gundam_heaven/change_userinfo.html', context)
     elif request.method == 'GET':
-        # form = UserInfoChangeForm()
         context['action'] = reverse_lazy('gundam_heaven:change-info')
         return render(request, 'gundam_heaven/change_userinfo.html', context)
 
@@ -265,4 +261,14 @@ class FavoriteFolderListView(ListView):
         context['articles'] = articles
         context['current_folder'] = folder_id
         return context
+
+
+@login_required(login_url=reverse_lazy('gundam_heaven:login'))
+@require_POST
+def validate_email(request):
+    '''
+    send email to check the email is valid
+    '''
+    pass
+
 

@@ -20,6 +20,9 @@ class UserInfo(models.Model):
     sex = models.IntegerField(choices=SEX_CHOICES, default=9)
     photo = models.ImageField(upload_to=user_dir, default='photo/default.jpg', blank=True)
     owner = models.OneToOneField(User, on_delete=models.CASCADE)
+    # for email validation, if email here is equal to user.email, the email is validated,
+    # or user's email is not validated.
+    email = models.EmailField(blank=True, null=True)
 
     def __repr__(self):
         return '<UserInfo: {}>'.format(self.nickname)
