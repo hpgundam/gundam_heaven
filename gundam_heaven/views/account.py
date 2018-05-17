@@ -104,10 +104,10 @@ def change_password(request):
             login(request, request.user)
             return redirect(reverse('gundam_heaven:show_user', kwargs={'id': request.user.id}))
         else:
-            return render(request, 'gundam_heaven/change_password.html', {'form': form, 'action': reverse_lazy('gundam_heaven:password-change')})
+            return render(request, 'gundam_heaven/change_password.html', {'form': form, 'action': reverse_lazy('gundam_heaven:change-password')})
     elif request.method == 'GET':
         form = PasswordChangeForm(request.user)
-        return render(request, 'gundam_heaven/change_password.html', {'form': form, 'action': reverse_lazy('gundam_heaven:password-change')})
+        return render(request, 'gundam_heaven/change_password.html', {'form': form, 'action': reverse_lazy('gundam_heaven:change-password')})
 
 @login_required(login_url=reverse_lazy('gundam_heaven:login'))
 @require_http_methods(['GET', 'POST'])
