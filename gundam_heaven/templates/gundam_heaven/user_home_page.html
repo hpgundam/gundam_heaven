@@ -24,7 +24,15 @@
             </li>
             <li class="list-group-item">
                 <div class="font-weight-bold">Sex:</div>
-                <div class="text-center">{{ owner.userinfo.sex }}</div>
+                <div class="text-center">
+                    {% if owner.userinfo.sex == 0 %}
+                        <i class="fa fa-mars"></i>
+                    {% elif owner.userinfo.sex == 1 %}
+                        <i class="fa fa-venus"></i>
+                    {% elif owner.userinfo.sex == 9 %}
+                        <i class="fa fa-genderless"></i>
+                    {% endif %}
+                </div>
             </li>
             <li class="list-group-item">
                 <div class="font-weight-bold">Age:</div>
