@@ -1,2 +1,4 @@
 *.py[cod]
 *.sqlite3
+mq_p.py
+mq_c.py

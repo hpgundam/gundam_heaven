@@ -47,6 +47,8 @@ def add_page_in_url(page_no, url):
 
 @register.filter(name='favorite_already')
 def favorite_already(article, user):
+    if user.is_anonymous:
+        return False
     for folder in user.favoritefolder_set.all():
         if article in folder.articles.all():
             return True
